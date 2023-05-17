@@ -1,5 +1,5 @@
 cmake-build-debug/
 a.out
 venv/
-.idea
 build/
+.idea/
