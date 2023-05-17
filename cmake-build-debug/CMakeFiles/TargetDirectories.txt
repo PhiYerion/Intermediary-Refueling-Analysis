@@ -1,0 +1,3 @@
+/home/user/Projects/EML2-to-Mars/src/cmake-build-debug/CMakeFiles/src.dir
+/home/user/Projects/EML2-to-Mars/src/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/user/Projects/EML2-to-Mars/src/cmake-build-debug/CMakeFiles/rebuild_cache.dir
