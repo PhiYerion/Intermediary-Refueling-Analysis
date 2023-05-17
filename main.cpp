@@ -174,6 +174,24 @@ public:
         genDeltaV();
     }
 
+    void printStats() {
+        printf("DeltaV: %fm/s\n", this->getDeltaV());
+        printf("Mass: %fkg\n", this->getMass());
+        uint i = 0;
+        for (auto stagesiter = this->stages.begin(); stagesiter != this->stages.end(); stagesiter++) {
+            printf("Stage %u:\n", i);
+            printf("\tTotal Stage Mass: %fkg\n", stagesiter->totalMass);
+            printf("\tTotal Mass for remaining stages: %fkg\n", this->getRemainingMass(&(*stagesiter)));
+            printf("\tDeltaV: %fm/s\n", stagesiter->deltaV);
+            printf("\tDryMass: %fkg\n", stagesiter->dryMass);
+            printf("\tFuelMass: %fkg\n", stagesiter->fuelMass);
+            printf("\tEngine %s:\n", stagesiter->engine.name);
+            printf("\t\tMass: %fkg\n", stagesiter->engine.mass);
+            printf("\t\tExhaustVelocity: %fm/s\n", stagesiter->engine.exhaustVelocity);
+        }
+    }
+
+protected:
     std::vector<Stage> stages; /**< Vector of stages. */
     double mass;               /**< Total mass of the spaceship. */
     double deltaV;             /**< Total delta-V of the spaceship. */
@@ -208,20 +226,7 @@ int main () {
     auto* ship = new SpaceShip();
     ship->addStage(100, 1, {100, 100, "S1"});
     ship->addStage(50, 20, {5, 1000, "S0"});
-    printf("DeltaV: %fm/s\n", ship->getDeltaV());
-    printf("Mass: %fkg\n", ship->getMass());
-    uint i = 0;
-    for (auto stagesiter = ship->stages.begin(); stagesiter != ship->stages.end(); stagesiter++) {
-        printf("Stage %u:\n", i);
-        printf("\tTotal Stage Mass: %fkg\n", stagesiter->totalMass);
-        printf("\tTotal Mass for remaining stages: %fkg\n", ship->getRemainingMass(&(*stagesiter)));
-        printf("\tDeltaV: %fm/s\n", stagesiter->deltaV);
-        printf("\tDryMass: %fkg\n", stagesiter->dryMass);
-        printf("\tFuelMass: %fkg\n", stagesiter->fuelMass);
-        printf("\tEngine %s:\n", stagesiter->engine.name);
-        printf("\t\tMass: %fkg\n", stagesiter->engine.mass);
-        printf("\t\tExhaustVelocity: %fm/s\n", stagesiter->engine.exhaustVelocity);
-    }
+    ship->printStats();
     free(ship);
     return 1;
 }
