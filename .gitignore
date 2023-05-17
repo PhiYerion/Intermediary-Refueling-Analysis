@@ -2,5 +2,4 @@ cmake-build-debug/
 a.out
 venv/
 .idea
-lib/Catch2
 build/
