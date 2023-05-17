@@ -227,6 +227,6 @@ int main () {
     ship->addStage(100, 1, {100, 100, "S1"});
     ship->addStage(50, 20, {5, 1000, "S0"});
     ship->printStats();
-    free(ship);
+    delete(ship);
     return 1;
 }
