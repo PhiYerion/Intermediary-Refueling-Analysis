@@ -51,13 +51,13 @@ public:
      * @param inputStage The stage.
      * @return Mass of rocket during this stage prior to any burn or mass loss.
      */
-    double getRemainingMass (const Stage& inputStage) {
+    double getRemainingMass (const Stage* inputStage) {
         double remainingMass = mass;
-        for (const auto& stage : stages) {
-            if (&stage == &inputStage) {
+        for (auto stagesiter = stages.begin(); stagesiter != stages.end(); stagesiter++) {
+            if (&(*stagesiter) == inputStage) {
                 return remainingMass;
             }
-            remainingMass -= stage.dryMass + stage.engine.mass + stage.fuelMass;
+            remainingMass -= stagesiter->totalMass;
         }
         return remainingMass;
     }
@@ -174,10 +174,9 @@ public:
         genDeltaV();
     }
 
-protected:
     std::vector<Stage> stages; /**< Vector of stages. */
-    double mass; /**< Total mass of the spaceship. */
-    double deltaV; /**< Total delta-V of the spaceship. */
+    double mass;               /**< Total mass of the spaceship. */
+    double deltaV;             /**< Total delta-V of the spaceship. */
 
     /**
      * @brief Generates the delta-V for the spaceship or a specific stage.
@@ -188,15 +187,17 @@ protected:
      */
     void genDeltaV (Stage* inpStage = nullptr) {       // for addStage, this should implement only calcs on stages before new
         if (inpStage) {
-            double remainingMass = getRemainingMass(*inpStage);
+            double remainingMass = getRemainingMass(inpStage);
+            deltaV -= inpStage->deltaV;
             inpStage->deltaV = inpStage->engine.exhaustVelocity * log(remainingMass / (remainingMass - inpStage->fuelMass));
+            deltaV += inpStage->deltaV;
         } else {
             double remainingMass = mass;
             deltaV = 0;
             for (auto &stage: stages) {
-                stage.deltaV = stage.engine.exhaustVelocity * log(mass / (remainingMass - stage.fuelMass));
+                stage.deltaV = stage.engine.exhaustVelocity * log(remainingMass / (remainingMass - stage.fuelMass));
                 deltaV += stage.deltaV;
-                remainingMass -= stage.dryMass + stage.fuelMass + stage.engine.mass;
+                remainingMass -= stage.totalMass;
             }
         }
     }
@@ -207,19 +208,19 @@ int main () {
     auto* ship = new SpaceShip();
     ship->addStage(100, 1, {100, 100, "S1"});
     ship->addStage(50, 20, {5, 1000, "S0"});
-    printf("DeltaV: %f\n", ship->getDeltaV());
-    printf("Mass: %f\n", ship->getMass());
+    printf("DeltaV: %fm/s\n", ship->getDeltaV());
+    printf("Mass: %fkg\n", ship->getMass());
     uint i = 0;
-    for (const auto &stage : ship->getStages()) {
+    for (auto stagesiter = ship->stages.begin(); stagesiter != ship->stages.end(); stagesiter++) {
         printf("Stage %u:\n", i);
-        printf("\tTotal Stage Mass: %fkg\n", stage.totalMass);
-        printf("\tTotal Mass for remaining stages: %fkg\n", ship->getRemainingMass(stage));
-        printf("\tDeltaV: %fm/s\n", stage.deltaV);
-        printf("\tDryMass: %fkg\n", stage.dryMass);
-        printf("\tFuelMass: %fkg\n", stage.fuelMass);
-        printf("\tEngine %s:\n", stage.engine.name);
-        printf("\t\tMass: %fkg\n", stage.engine.mass);
-        printf("\t\tExhaustVelocity: %fm/s\n", stage.engine.exhaustVelocity);
+        printf("\tTotal Stage Mass: %fkg\n", stagesiter->totalMass);
+        printf("\tTotal Mass for remaining stages: %fkg\n", ship->getRemainingMass(&(*stagesiter)));
+        printf("\tDeltaV: %fm/s\n", stagesiter->deltaV);
+        printf("\tDryMass: %fkg\n", stagesiter->dryMass);
+        printf("\tFuelMass: %fkg\n", stagesiter->fuelMass);
+        printf("\tEngine %s:\n", stagesiter->engine.name);
+        printf("\t\tMass: %fkg\n", stagesiter->engine.mass);
+        printf("\t\tExhaustVelocity: %fm/s\n", stagesiter->engine.exhaustVelocity);
     }
     free(ship);
     return 1;
