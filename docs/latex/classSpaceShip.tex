@@ -1,0 +1,318 @@
+\hypertarget{classSpaceShip}{}\doxysection{Space\+Ship Class Reference}
+\label{classSpaceShip}\index{SpaceShip@{SpaceShip}}
+
+
+Spaceship class with full functionality.  
+
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+std\+::vector$<$ \mbox{\hyperlink{structStage}{Stage}} $>$ \mbox{\hyperlink{classSpaceShip_a41d486409bd2078054d6e78b019105f5}{get\+Stages}} ()
+\begin{DoxyCompactList}\small\item\em Returns the vector of stages. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classSpaceShip_ae6dd002dcdb34813b35bc81f740ac4f5}{get\+Remaining\+Mass}} (const \mbox{\hyperlink{structStage}{Stage}} \&input\+Stage)
+\begin{DoxyCompactList}\small\item\em Returns the mass of all stages above the specified stage + the specified stage\textquotesingle{}s mass. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structEngine}{Engine}} \mbox{\hyperlink{classSpaceShip_a302fc89e12e889a7117ef4b4dd8ab2e4}{get\+Engine}} (\mbox{\hyperlink{structStage}{Stage}} $\ast$stage)
+\begin{DoxyCompactList}\small\item\em Returns the engine of a stage. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classSpaceShip_a22e665902afb25f5376afd6342474d7b}{get\+Stage\+Dry\+Mass}} (\mbox{\hyperlink{structStage}{Stage}} $\ast$stage)
+\begin{DoxyCompactList}\small\item\em Returns the dry mass of a stage. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classSpaceShip_a0559a0ae43d094b75e5f3e1cff028ba1}{get\+Stage\+Fuel\+Mass}} (\mbox{\hyperlink{structStage}{Stage}} $\ast$stage)
+\begin{DoxyCompactList}\small\item\em Returns the fuel mass of a stage. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classSpaceShip_ad833f335983a3c7578634aa5d98098bf}{get\+Stage\+DeltaV}} (\mbox{\hyperlink{structStage}{Stage}} $\ast$stage)
+\begin{DoxyCompactList}\small\item\em Returns the delta-\/V of a stage. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classSpaceShip_a1a0b39b33cbb7a5abb859f1a4f23b434}{get\+Strage\+Total\+Mass}} (\mbox{\hyperlink{structStage}{Stage}} $\ast$stage)
+\begin{DoxyCompactList}\small\item\em Returns the total mass of a stage. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classSpaceShip_ab4dd15716c93ce843a63b2e068a63079}{get\+Mass}} ()
+\begin{DoxyCompactList}\small\item\em Returns the total mass of the spaceship. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classSpaceShip_a19ab835fbb037f02c9584920fc4f41a9}{get\+DeltaV}} ()
+\begin{DoxyCompactList}\small\item\em Returns the total delta-\/V of the spaceship. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classSpaceShip_a0c0ff5ea443d20bd55f85a9132b16a95}{set\+Stage\+Dry\+Mass}} (\mbox{\hyperlink{structStage}{Stage}} $\ast$stage, const double new\+Mass)
+\begin{DoxyCompactList}\small\item\em Sets the dry mass of a stage. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classSpaceShip_af9ee7ac5665de767e06f908b83abf4a1}{set\+Stage\+Fuel\+Mass}} (\mbox{\hyperlink{structStage}{Stage}} $\ast$stage, const double new\+Mass)
+\begin{DoxyCompactList}\small\item\em Sets the fuel mass of a stage. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classSpaceShip_a2d6b0448e1c49df78ecf32177c96fe68}{set\+Stage\+Engine}} (\mbox{\hyperlink{structStage}{Stage}} $\ast$stage, const \mbox{\hyperlink{structEngine}{Engine}} new\+Engine)
+\begin{DoxyCompactList}\small\item\em Sets the engine of a stage. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classSpaceShip_a4f4462a8a3162a321954c3beb4c790cc}{add\+Stage}} (const double dry\+Mass, const double fuel\+Mass, const \mbox{\hyperlink{structEngine}{Engine}} engine, const int index=-\/1)
+\begin{DoxyCompactList}\small\item\em Adds a stage to the spaceship. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classSpaceShip_a8115ed26fdac1731e30712d1dec90006}{gen\+DeltaV}} (\mbox{\hyperlink{structStage}{Stage}} $\ast$inp\+Stage=nullptr)
+\begin{DoxyCompactList}\small\item\em Generates the delta-\/V for the spaceship or a specific stage. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::vector$<$ \mbox{\hyperlink{structStage}{Stage}} $>$ \mbox{\hyperlink{classSpaceShip_a3ed411c672317be2396d81930c39af1c}{stages}}
+\item 
+double \mbox{\hyperlink{classSpaceShip_a517a052a8d82db8280db856eeff28036}{mass}}
+\item 
+double \mbox{\hyperlink{classSpaceShip_a0f85ac82d8cba07169557496f4a56641}{deltaV}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Spaceship class with full functionality. 
+
+This class provides getters and setters for accessing and modifying the spaceship\textquotesingle{}s attributes. Directly setting variables will produce inaccurate measurements, so they are protected. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classSpaceShip_a4f4462a8a3162a321954c3beb4c790cc}\label{classSpaceShip_a4f4462a8a3162a321954c3beb4c790cc}} 
+\index{SpaceShip@{SpaceShip}!addStage@{addStage}}
+\index{addStage@{addStage}!SpaceShip@{SpaceShip}}
+\doxysubsubsection{\texorpdfstring{addStage()}{addStage()}}
+{\footnotesize\ttfamily void Space\+Ship\+::add\+Stage (\begin{DoxyParamCaption}\item[{const double}]{dry\+Mass,  }\item[{const double}]{fuel\+Mass,  }\item[{const \mbox{\hyperlink{structEngine}{Engine}}}]{engine,  }\item[{const int}]{index = {\ttfamily -\/1} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Adds a stage to the spaceship. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dry\+Mass} & The dry mass of the stage. \\
+\hline
+{\em fuel\+Mass} & The fuel mass of the stage. \\
+\hline
+{\em engine} & The engine used in the stage. \\
+\hline
+{\em index} & The index at which to insert the stage (optional). \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classSpaceShip_a8115ed26fdac1731e30712d1dec90006}\label{classSpaceShip_a8115ed26fdac1731e30712d1dec90006}} 
+\index{SpaceShip@{SpaceShip}!genDeltaV@{genDeltaV}}
+\index{genDeltaV@{genDeltaV}!SpaceShip@{SpaceShip}}
+\doxysubsubsection{\texorpdfstring{genDeltaV()}{genDeltaV()}}
+{\footnotesize\ttfamily void Space\+Ship\+::gen\+DeltaV (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structStage}{Stage}} $\ast$}]{inp\+Stage = {\ttfamily nullptr} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}
+
+
+
+Generates the delta-\/V for the spaceship or a specific stage. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em inp\+Stage} & Pointer to the input stage (optional).\\
+\hline
+\end{DoxyParams}
+If inp\+Stage is specified, it calculates the delta-\/V only for stages before the new stage. Otherwise, it calculates the delta-\/V for all stages. \mbox{\Hypertarget{classSpaceShip_a19ab835fbb037f02c9584920fc4f41a9}\label{classSpaceShip_a19ab835fbb037f02c9584920fc4f41a9}} 
+\index{SpaceShip@{SpaceShip}!getDeltaV@{getDeltaV}}
+\index{getDeltaV@{getDeltaV}!SpaceShip@{SpaceShip}}
+\doxysubsubsection{\texorpdfstring{getDeltaV()}{getDeltaV()}}
+{\footnotesize\ttfamily double Space\+Ship\+::get\+DeltaV (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the total delta-\/V of the spaceship. 
+
+\begin{DoxyReturn}{Returns}
+Total delta-\/V of the spaceship. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classSpaceShip_a302fc89e12e889a7117ef4b4dd8ab2e4}\label{classSpaceShip_a302fc89e12e889a7117ef4b4dd8ab2e4}} 
+\index{SpaceShip@{SpaceShip}!getEngine@{getEngine}}
+\index{getEngine@{getEngine}!SpaceShip@{SpaceShip}}
+\doxysubsubsection{\texorpdfstring{getEngine()}{getEngine()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structEngine}{Engine}} Space\+Ship\+::get\+Engine (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structStage}{Stage}} $\ast$}]{stage }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the engine of a stage. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em stage} & Pointer to the stage. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\mbox{\hyperlink{structEngine}{Engine}} of the stage. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classSpaceShip_ab4dd15716c93ce843a63b2e068a63079}\label{classSpaceShip_ab4dd15716c93ce843a63b2e068a63079}} 
+\index{SpaceShip@{SpaceShip}!getMass@{getMass}}
+\index{getMass@{getMass}!SpaceShip@{SpaceShip}}
+\doxysubsubsection{\texorpdfstring{getMass()}{getMass()}}
+{\footnotesize\ttfamily double Space\+Ship\+::get\+Mass (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the total mass of the spaceship. 
+
+\begin{DoxyReturn}{Returns}
+Total mass of the spaceship. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classSpaceShip_ae6dd002dcdb34813b35bc81f740ac4f5}\label{classSpaceShip_ae6dd002dcdb34813b35bc81f740ac4f5}} 
+\index{SpaceShip@{SpaceShip}!getRemainingMass@{getRemainingMass}}
+\index{getRemainingMass@{getRemainingMass}!SpaceShip@{SpaceShip}}
+\doxysubsubsection{\texorpdfstring{getRemainingMass()}{getRemainingMass()}}
+{\footnotesize\ttfamily double Space\+Ship\+::get\+Remaining\+Mass (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structStage}{Stage}} \&}]{input\+Stage }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the mass of all stages above the specified stage + the specified stage\textquotesingle{}s mass. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em input\+Stage} & The stage. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Mass of rocket during this stage prior to any burn or mass loss. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classSpaceShip_ad833f335983a3c7578634aa5d98098bf}\label{classSpaceShip_ad833f335983a3c7578634aa5d98098bf}} 
+\index{SpaceShip@{SpaceShip}!getStageDeltaV@{getStageDeltaV}}
+\index{getStageDeltaV@{getStageDeltaV}!SpaceShip@{SpaceShip}}
+\doxysubsubsection{\texorpdfstring{getStageDeltaV()}{getStageDeltaV()}}
+{\footnotesize\ttfamily double Space\+Ship\+::get\+Stage\+DeltaV (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structStage}{Stage}} $\ast$}]{stage }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the delta-\/V of a stage. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em stage} & Pointer to the stage. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Delta-\/V of the stage. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classSpaceShip_a22e665902afb25f5376afd6342474d7b}\label{classSpaceShip_a22e665902afb25f5376afd6342474d7b}} 
+\index{SpaceShip@{SpaceShip}!getStageDryMass@{getStageDryMass}}
+\index{getStageDryMass@{getStageDryMass}!SpaceShip@{SpaceShip}}
+\doxysubsubsection{\texorpdfstring{getStageDryMass()}{getStageDryMass()}}
+{\footnotesize\ttfamily double Space\+Ship\+::get\+Stage\+Dry\+Mass (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structStage}{Stage}} $\ast$}]{stage }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the dry mass of a stage. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em stage} & Pointer to the stage. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Dry mass of the stage. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classSpaceShip_a0559a0ae43d094b75e5f3e1cff028ba1}\label{classSpaceShip_a0559a0ae43d094b75e5f3e1cff028ba1}} 
+\index{SpaceShip@{SpaceShip}!getStageFuelMass@{getStageFuelMass}}
+\index{getStageFuelMass@{getStageFuelMass}!SpaceShip@{SpaceShip}}
+\doxysubsubsection{\texorpdfstring{getStageFuelMass()}{getStageFuelMass()}}
+{\footnotesize\ttfamily double Space\+Ship\+::get\+Stage\+Fuel\+Mass (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structStage}{Stage}} $\ast$}]{stage }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the fuel mass of a stage. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em stage} & Pointer to the stage. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Fuel mass of the stage. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classSpaceShip_a41d486409bd2078054d6e78b019105f5}\label{classSpaceShip_a41d486409bd2078054d6e78b019105f5}} 
+\index{SpaceShip@{SpaceShip}!getStages@{getStages}}
+\index{getStages@{getStages}!SpaceShip@{SpaceShip}}
+\doxysubsubsection{\texorpdfstring{getStages()}{getStages()}}
+{\footnotesize\ttfamily std\+::vector$<$ \mbox{\hyperlink{structStage}{Stage}} $>$ Space\+Ship\+::get\+Stages (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the vector of stages. 
+
+\begin{DoxyReturn}{Returns}
+Vector of stages. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classSpaceShip_a1a0b39b33cbb7a5abb859f1a4f23b434}\label{classSpaceShip_a1a0b39b33cbb7a5abb859f1a4f23b434}} 
+\index{SpaceShip@{SpaceShip}!getStrageTotalMass@{getStrageTotalMass}}
+\index{getStrageTotalMass@{getStrageTotalMass}!SpaceShip@{SpaceShip}}
+\doxysubsubsection{\texorpdfstring{getStrageTotalMass()}{getStrageTotalMass()}}
+{\footnotesize\ttfamily double Space\+Ship\+::get\+Strage\+Total\+Mass (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structStage}{Stage}} $\ast$}]{stage }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the total mass of a stage. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em stage} & Pointer to the stage. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Total mass of the stage. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classSpaceShip_a0c0ff5ea443d20bd55f85a9132b16a95}\label{classSpaceShip_a0c0ff5ea443d20bd55f85a9132b16a95}} 
+\index{SpaceShip@{SpaceShip}!setStageDryMass@{setStageDryMass}}
+\index{setStageDryMass@{setStageDryMass}!SpaceShip@{SpaceShip}}
+\doxysubsubsection{\texorpdfstring{setStageDryMass()}{setStageDryMass()}}
+{\footnotesize\ttfamily void Space\+Ship\+::set\+Stage\+Dry\+Mass (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structStage}{Stage}} $\ast$}]{stage,  }\item[{const double}]{new\+Mass }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the dry mass of a stage. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em stage} & Pointer to the stage. \\
+\hline
+{\em new\+Mass} & The new dry mass. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classSpaceShip_a2d6b0448e1c49df78ecf32177c96fe68}\label{classSpaceShip_a2d6b0448e1c49df78ecf32177c96fe68}} 
+\index{SpaceShip@{SpaceShip}!setStageEngine@{setStageEngine}}
+\index{setStageEngine@{setStageEngine}!SpaceShip@{SpaceShip}}
+\doxysubsubsection{\texorpdfstring{setStageEngine()}{setStageEngine()}}
+{\footnotesize\ttfamily void Space\+Ship\+::set\+Stage\+Engine (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structStage}{Stage}} $\ast$}]{stage,  }\item[{const \mbox{\hyperlink{structEngine}{Engine}}}]{new\+Engine }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the engine of a stage. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em stage} & Pointer to the stage. \\
+\hline
+{\em new\+Engine} & The new engine. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classSpaceShip_af9ee7ac5665de767e06f908b83abf4a1}\label{classSpaceShip_af9ee7ac5665de767e06f908b83abf4a1}} 
+\index{SpaceShip@{SpaceShip}!setStageFuelMass@{setStageFuelMass}}
+\index{setStageFuelMass@{setStageFuelMass}!SpaceShip@{SpaceShip}}
+\doxysubsubsection{\texorpdfstring{setStageFuelMass()}{setStageFuelMass()}}
+{\footnotesize\ttfamily void Space\+Ship\+::set\+Stage\+Fuel\+Mass (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structStage}{Stage}} $\ast$}]{stage,  }\item[{const double}]{new\+Mass }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the fuel mass of a stage. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em stage} & Pointer to the stage. \\
+\hline
+{\em new\+Mass} & The new fuel mass. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{classSpaceShip_a0f85ac82d8cba07169557496f4a56641}\label{classSpaceShip_a0f85ac82d8cba07169557496f4a56641}} 
+\index{SpaceShip@{SpaceShip}!deltaV@{deltaV}}
+\index{deltaV@{deltaV}!SpaceShip@{SpaceShip}}
+\doxysubsubsection{\texorpdfstring{deltaV}{deltaV}}
+{\footnotesize\ttfamily double Space\+Ship\+::deltaV\hspace{0.3cm}{\ttfamily [protected]}}
+
+Total delta-\/V of the spaceship. \mbox{\Hypertarget{classSpaceShip_a517a052a8d82db8280db856eeff28036}\label{classSpaceShip_a517a052a8d82db8280db856eeff28036}} 
+\index{SpaceShip@{SpaceShip}!mass@{mass}}
+\index{mass@{mass}!SpaceShip@{SpaceShip}}
+\doxysubsubsection{\texorpdfstring{mass}{mass}}
+{\footnotesize\ttfamily double Space\+Ship\+::mass\hspace{0.3cm}{\ttfamily [protected]}}
+
+Total mass of the spaceship. \mbox{\Hypertarget{classSpaceShip_a3ed411c672317be2396d81930c39af1c}\label{classSpaceShip_a3ed411c672317be2396d81930c39af1c}} 
+\index{SpaceShip@{SpaceShip}!stages@{stages}}
+\index{stages@{stages}!SpaceShip@{SpaceShip}}
+\doxysubsubsection{\texorpdfstring{stages}{stages}}
+{\footnotesize\ttfamily std\+::vector$<$\mbox{\hyperlink{structStage}{Stage}}$>$ Space\+Ship\+::stages\hspace{0.3cm}{\ttfamily [protected]}}
+
+Vector of stages. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+main.\+cpp\end{DoxyCompactItemize}

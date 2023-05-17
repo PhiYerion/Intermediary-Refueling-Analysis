@@ -1,0 +1,63 @@
+\hypertarget{structStage}{}\doxysection{Stage Struct Reference}
+\label{structStage}\index{Stage@{Stage}}
+
+
+Represents a stage of a spaceship.  
+
+
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structEngine}{Engine}} \mbox{\hyperlink{structStage_ae668cd59ff9ce6b09f7c0d98b946c1a7}{engine}}
+\item 
+double \mbox{\hyperlink{structStage_aadd30ab4bbd9956376053dee50afb7f1}{deltaV}}
+\item 
+double \mbox{\hyperlink{structStage_a825bcb66b8a486a4dee9a3e6139ae47d}{dry\+Mass}}
+\item 
+double \mbox{\hyperlink{structStage_adebb2371854fa8eca2486d0bd497e8af}{fuel\+Mass}}
+\item 
+double \mbox{\hyperlink{structStage_a0131d7b60599916a009969f2a713d078}{total\+Mass}} = 0
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents a stage of a spaceship. 
+
+Any loss in non-\/fuel mass mid-\/stage will not be accounted for. 
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{structStage_aadd30ab4bbd9956376053dee50afb7f1}\label{structStage_aadd30ab4bbd9956376053dee50afb7f1}} 
+\index{Stage@{Stage}!deltaV@{deltaV}}
+\index{deltaV@{deltaV}!Stage@{Stage}}
+\doxysubsubsection{\texorpdfstring{deltaV}{deltaV}}
+{\footnotesize\ttfamily double Stage\+::deltaV}
+
+Delta-\/V of the stage. \mbox{\Hypertarget{structStage_a825bcb66b8a486a4dee9a3e6139ae47d}\label{structStage_a825bcb66b8a486a4dee9a3e6139ae47d}} 
+\index{Stage@{Stage}!dryMass@{dryMass}}
+\index{dryMass@{dryMass}!Stage@{Stage}}
+\doxysubsubsection{\texorpdfstring{dryMass}{dryMass}}
+{\footnotesize\ttfamily double Stage\+::dry\+Mass}
+
+Dry mass of the stage (excluding engine mass). \mbox{\Hypertarget{structStage_ae668cd59ff9ce6b09f7c0d98b946c1a7}\label{structStage_ae668cd59ff9ce6b09f7c0d98b946c1a7}} 
+\index{Stage@{Stage}!engine@{engine}}
+\index{engine@{engine}!Stage@{Stage}}
+\doxysubsubsection{\texorpdfstring{engine}{engine}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structEngine}{Engine}} Stage\+::engine}
+
+\mbox{\hyperlink{structEngine}{Engine}} used in the stage. \mbox{\Hypertarget{structStage_adebb2371854fa8eca2486d0bd497e8af}\label{structStage_adebb2371854fa8eca2486d0bd497e8af}} 
+\index{Stage@{Stage}!fuelMass@{fuelMass}}
+\index{fuelMass@{fuelMass}!Stage@{Stage}}
+\doxysubsubsection{\texorpdfstring{fuelMass}{fuelMass}}
+{\footnotesize\ttfamily double Stage\+::fuel\+Mass}
+
+Fuel mass of the stage. \mbox{\Hypertarget{structStage_a0131d7b60599916a009969f2a713d078}\label{structStage_a0131d7b60599916a009969f2a713d078}} 
+\index{Stage@{Stage}!totalMass@{totalMass}}
+\index{totalMass@{totalMass}!Stage@{Stage}}
+\doxysubsubsection{\texorpdfstring{totalMass}{totalMass}}
+{\footnotesize\ttfamily double Stage\+::total\+Mass = 0}
+
+Total mass of the stage (including engine mass). 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+main.\+cpp\end{DoxyCompactItemize}
