@@ -10,8 +10,8 @@
  * @brief Represents an engine.
  */
 struct Engine {
-    double mass;               /**< Mass of the engine. */
-    double exhaustVelocity;    /**< Exhaust velocity of the engine. */
+    long double mass;               /**< Mass of the engine. */
+    long double exhaustVelocity;    /**< Exhaust velocity of the engine. */
     const char* name;          /**< Name of the engine. */
 };
 
@@ -22,7 +22,7 @@ struct Engine {
  */
 struct Stage {
     Engine engine;             /**< Engine used in the stage. */
-    double deltaV,             /**< Delta-V of the stage. */
+    long double deltaV,             /**< Delta-V of the stage. */
     dryMass,            /**< Dry mass of the stage (excluding engine mass). */
     fuelMass,           /**< Fuel mass of the stage. */
     totalMass = 0;      /**< Total mass of the stage (including engine mass). */
@@ -55,8 +55,8 @@ public:
      * @param inputStage The stage.
      * @return Mass of rocket during this stage prior to any burn or mass loss.
      */
-    double getRemainingMass (const Stage* inputStage) {
-        double remainingMass = mass;
+    long double getRemainingMass (const Stage* inputStage) {
+        long double remainingMass = mass;
         for (auto & stage : stages) {
             if (&stage == inputStage) {
                 return remainingMass;
@@ -65,8 +65,8 @@ public:
         }
         return remainingMass;
     }
-    double getRemainingMass (const int inputStageIndex) {
-        double remainingMass = mass;
+    long double getRemainingMass (const int inputStageIndex) {
+        long double remainingMass = mass;
         uint i = 0;
         for (const auto& stage : stages) {
             if (i == inputStageIndex) {
@@ -92,7 +92,7 @@ public:
     * @param stage Pointer to the stage.
     * @return Dry mass of the stage.
     */
-    double getStageDryMass(Stage* stage) {
+    long double getStageDryMass(Stage* stage) {
         return stage->dryMass;
     }
 
@@ -101,7 +101,7 @@ public:
      * @param stage Pointer to the stage.
      * @return Fuel mass of the stage.
      */
-    double getStageFuelMass(Stage* stage) {
+    long double getStageFuelMass(Stage* stage) {
         return stage->fuelMass;
     }
 
@@ -110,7 +110,7 @@ public:
      * @param stage Pointer to the stage.
      * @return Delta-V of the stage.
      */
-    double getStageDeltaV(Stage* stage) {
+    long double getStageDeltaV(Stage* stage) {
         return stage->deltaV;
     }
 
@@ -119,7 +119,7 @@ public:
      * @param stage Pointer to the stage.
      * @return Total mass of the stage.
      */
-    double getStrageTotalMass(Stage* stage) {
+    long double getStrageTotalMass(Stage* stage) {
         return stage->totalMass;
     }
 
@@ -127,7 +127,7 @@ public:
      * @brief Returns the total mass of the spaceship.
      * @return Total mass of the spaceship.
      */
-    double getMass() {
+    long double getMass() {
         return mass;
     }
 
@@ -135,7 +135,7 @@ public:
      * @brief Returns the total delta-V of the spaceship.
      * @return Total delta-V of the spaceship.
      */
-    double getDeltaV() {
+    long double getDeltaV() {
         return deltaV;
     }
 
@@ -144,7 +144,7 @@ public:
      * @param stage Pointer to the stage.
      * @param newMass The new dry mass.
      */
-    void setStageDryMass(Stage* stage, const double newMass) {
+    void setStageDryMass(Stage* stage, const long double newMass) {
         mass += newMass - stage->dryMass;
         stage->dryMass = newMass;
         stage->totalMass = stage->dryMass + stage->fuelMass + stage->engine.mass;
@@ -156,7 +156,7 @@ public:
      * @param stage Pointer to the stage.
      * @param newMass The new fuel mass.
      */
-    void setStageFuelMass(Stage* stage, const double newMass) {
+    void setStageFuelMass(Stage* stage, const long double newMass) {
         mass += newMass - stage->fuelMass;
         stage->fuelMass = newMass;
         stage->totalMass = stage->dryMass + stage->fuelMass + stage->engine.mass;
@@ -182,12 +182,12 @@ public:
      * @param engine The engine used in the stage.
      * @param index The index at which to insert the stage (optional).
      */
-    void addStage(const double dryMass, const double fuelMass, const Engine engine, const int index = -1) {
+    void addStage(const long double dryMass, const long double fuelMass, const Engine engine, const int index = -1) {
         if (index != -1) {
             stages.insert(stages.begin() + index, {engine, 0, dryMass, fuelMass, dryMass + fuelMass + engine.mass});
         } else {
             stages.push_back({engine, 0, dryMass, fuelMass, dryMass + fuelMass + engine.mass});
-            std::cerr << "Warning: index not specified for addStage, appending to end of stages\n";
+            //std::cerr << "Warning: index not specified for addStage, appending to end of stages\n";
         }
         mass += dryMass + fuelMass + engine.mass;
         genDeltaV();
@@ -212,8 +212,8 @@ public:
 
 protected:
     std::vector<Stage> stages; /**< Vector of stages. */
-    double mass;               /**< Total mass of the spaceship. */
-    double deltaV;             /**< Total delta-V of the spaceship. */
+    long double mass;               /**< Total mass of the spaceship. */
+    long double deltaV;             /**< Total delta-V of the spaceship. */
 
     /**
      * @brief Generates the delta-V for the spaceship or a specific stage.
@@ -224,12 +224,12 @@ protected:
      */
     void genDeltaV (Stage* inpStage = nullptr) {       // for addStage, this should implement only calcs on stages before new
         if (inpStage) {
-            double remainingMass = getRemainingMass(inpStage);
+            long double remainingMass = getRemainingMass(inpStage);
             deltaV -= inpStage->deltaV;
             inpStage->deltaV = inpStage->engine.exhaustVelocity * log(remainingMass / (remainingMass - inpStage->fuelMass));
             deltaV += inpStage->deltaV;
         } else {
-            double remainingMass = mass;
+            long double remainingMass = mass;
             deltaV = 0;
             for (auto &stage: stages) {
                 stage.deltaV = stage.engine.exhaustVelocity * log(remainingMass / (remainingMass - stage.fuelMass));
