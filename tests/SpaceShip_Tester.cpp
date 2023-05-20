@@ -79,15 +79,15 @@ TEST_CASE("SpaceShip") {
                 localStage->dryMass = valRange(gen);
                 ship->setStageDryMass(&(*stageIter), localStage->dryMass);
             }
-            /*if (0 < modifyValChance(gen)) {
+            if (0 < modifyValChance(gen)) {
                 localStage->fuelMass = valRange(gen);
-                ship->setStageFuelMass(&(*stageIter), localStage->dryMass);
+                ship->setStageFuelMass(&(*stageIter), localStage->fuelmass);
             }
             if (0 < modifyValChance(gen)) {
                 localStage->engineMass = valRange(gen);
                 localStage->exhaustVelocity = valRange(gen);
                 ship->setStageEngine(&(*stageIter), {localStage->engineMass, localStage->exhaustVelocity, ("S" + std::to_string(i)).c_str()});
-            }*/
+            }
             --localStage;
             --stageIter;
         }
