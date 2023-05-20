@@ -10,8 +10,8 @@ void doubleTest(long double a, long double b, char* name) {
 };
 
 long double genDeltaV(long double remaningMass, long double fuelMass, long double exhaustVelocity) {
-    return log((remaningMass - fuelMass) / remaningMass) * exhaustVelocity;
-    /*mpfr_t result;
+    //return log((remaningMass - fuelMass) / remaningMass) * exhaustVelocity;
+    mpfr_t result;
     mpfr_init2(result, 256);
     mpfr_prec_t precision = 256;
     mpfr_set_default_prec(precision);
@@ -28,7 +28,7 @@ long double genDeltaV(long double remaningMass, long double fuelMass, long doubl
     //Free resources
     //mpfr_clear(result);
     //mpfr_clear(denominator);
-    return mpfr_get_ld(result, MPFR_RNDN);*/
+    return mpfr_get_ld(result, MPFR_RNDN);
 }
 
 TEST_CASE("SpaceShip") {
