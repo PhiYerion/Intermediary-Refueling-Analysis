@@ -46,8 +46,8 @@ public:
       * @brief Returns the vector of stages.
       * @return Vector of stages.
       */
-    std::vector<Stage> getStages () {
-        return stages;
+    std::vector<Stage>* getStages () {
+        return &stages;
     }
 
     /**
@@ -57,7 +57,7 @@ public:
      */
     double getRemainingMass (const Stage* inputStage) {
         double remainingMass = mass;
-        for (auto stagesiter = stages.begin(); stagesiter != stages.end(); stagesiter++) {
+        for (auto stagesiter = --stages.begin(); stagesiter != stages.end(); stagesiter++) {
             if (&(*stagesiter) == inputStage) {
                 return remainingMass;
             }
@@ -147,6 +147,7 @@ public:
     void setStageDryMass(Stage* stage, const double newMass) {
         mass += newMass - stage->dryMass;
         stage->dryMass = newMass;
+        stage->totalMass = stage->dryMass + stage->fuelMass + stage->engine.mass;
         genDeltaV(stage);
     }
 
@@ -158,6 +159,7 @@ public:
     void setStageFuelMass(Stage* stage, const double newMass) {
         mass += newMass - stage->fuelMass;
         stage->fuelMass = newMass;
+        stage->totalMass = stage->dryMass + stage->fuelMass + stage->engine.mass;
         genDeltaV(stage);
     }
 
@@ -169,6 +171,7 @@ public:
     void setStageEngine(Stage* stage, const Engine newEngine) {
         mass += newEngine.mass - stage->engine.mass;
         stage->engine = newEngine;
+        stage->totalMass = stage->dryMass + stage->fuelMass + stage->engine.mass;
         genDeltaV(stage);
     }
 
@@ -184,7 +187,7 @@ public:
             stages.insert(stages.begin() + index, {engine, 0, dryMass, fuelMass, dryMass + fuelMass + engine.mass});
         } else {
             stages.push_back({engine, 0, dryMass, fuelMass, dryMass + fuelMass + engine.mass});
-            std::cerr << "Warning: index not specified for addStage, appending to end of stages\n";
+            //std::cerr << "Warning: index not specified for addStage, appending to end of stages\n";
         }
         mass += dryMass + fuelMass + engine.mass;
         genDeltaV();
