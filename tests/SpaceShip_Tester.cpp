@@ -5,7 +5,7 @@
 #include "../SpaceShip.h"
 
 void doubleTest(double a, double b, char* name) {
-    printf("%20s variance: %15f\%\n", name, (a - b) * 100 / a);
+    printf("%20s variance: %15e\n", name, (a - b) / a);
     CHECK_THAT(a, Catch::Matchers::WithinRel(b, .00001));
 };
 
@@ -28,6 +28,7 @@ TEST_CASE("SpaceShip") {
     const uint stageCount = stageRange(gen);
     for (uint i = 0; i < stageCount; i++) {
         stageList.push_back(*(new stage (valRange(gen), valRange(gen), valRange(gen), valRange(gen))));
+                                                                     stageList.at(i).exhaustVelocity, i;
         ship->addStage(stageList.at(i).dryMass, stageList.at(i).fuelMass, {stageList.at(i).engineMass,
                                                                            stageList.at(i).exhaustVelocity, ("S" + std::to_string(i)).c_str()});
     }
@@ -68,22 +69,18 @@ TEST_CASE("SpaceShip") {
         auto localStage = --stageList.end();
         auto stageIter = --ship->getStages()->end();
         for (uint i = stageList.size() - 1; i != 0; i--) {
-/*            if (0 < modifyValChance(gen)) {
+            if (0 < modifyValChance(gen)) {
                 localStage->dryMass = valRange(gen);
                 ship->setStageDryMass(&(*stageIter), localStage->dryMass);
-                printf("tester: %f", localStage->dryMass - stageIter->dryMass);
             }
             if (0 < modifyValChance(gen)) {
                 localStage->fuelMass = valRange(gen);
                 ship->setStageFuelMass(&(*stageIter), localStage->fuelMass);
-                printf("tester: %f", localStage->fuelMass - stageIter->fuelMass);
-            }*/
+            }
             if (0 < modifyValChance(gen)) {
                 localStage->engineMass = valRange(gen);
                 localStage->exhaustVelocity = valRange(gen);
                 ship->setStageEngine(&(*stageIter), {localStage->engineMass, localStage->exhaustVelocity, ("S" + std::to_string(i)).c_str()});
-                printf("tester: %f", localStage->engineMass - stageIter->engine.mass);
-                printf("tester: %f", localStage->exhaustVelocity - stageIter->engine.exhaustVelocity);
             }
             --localStage;
             --stageIter;

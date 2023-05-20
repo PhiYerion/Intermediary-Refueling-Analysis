@@ -57,11 +57,11 @@ public:
      */
     double getRemainingMass (const Stage* inputStage) {
         double remainingMass = mass;
-        for (auto stagesiter = --stages.begin(); stagesiter != stages.end(); stagesiter++) {
-            if (&(*stagesiter) == inputStage) {
+        for (auto & stage : stages) {
+            if (&stage == inputStage) {
                 return remainingMass;
             }
-            remainingMass -= stagesiter->totalMass;
+            remainingMass -= stage.totalMass;
         }
         return remainingMass;
     }
@@ -187,7 +187,7 @@ public:
             stages.insert(stages.begin() + index, {engine, 0, dryMass, fuelMass, dryMass + fuelMass + engine.mass});
         } else {
             stages.push_back({engine, 0, dryMass, fuelMass, dryMass + fuelMass + engine.mass});
-            //std::cerr << "Warning: index not specified for addStage, appending to end of stages\n";
+            std::cerr << "Warning: index not specified for addStage, appending to end of stages\n";
         }
         mass += dryMass + fuelMass + engine.mass;
         genDeltaV();
