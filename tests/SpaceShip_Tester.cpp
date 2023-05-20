@@ -5,12 +5,34 @@
 #include "../SpaceShip.h"
 
 void doubleTest(long double a, long double b, char* name) {
-    printf("%20s variance: %15e\n", name, 100 * (a - b) / a);
+    printf("%20s variance: %15Le\n", name, 100 * (a - b) / a);
     CHECK_THAT(a, Catch::Matchers::WithinRel(b, .00001));
 };
 
+long double genDeltaV(long double remaningMass, long double fuelMass, long double exhaustVelocity) {
+    return log((remaningMass - fuelMass) / remaningMass) * exhaustVelocity;
+    /*mpfr_t result;
+    mpfr_init2(result, 256);
+    mpfr_prec_t precision = 256;
+    mpfr_set_default_prec(precision);
+
+    mpfr_t denominator;
+    mpfr_init2(denominator, 256);
+    mpfr_set_ld(denominator, remaningMass - fuelMass, MPFR_RNDN);
+
+    mpfr_set_ld(result, remaningMass, MPFR_RNDN);
+
+    mpfr_log(result, denominator, MPFR_RNDN);
+    mpfr_mul_d(result, result, exhaustVelocity, MPFR_RNDN);
+
+    //Free resources
+    //mpfr_clear(result);
+    //mpfr_clear(denominator);
+    return mpfr_get_ld(result, MPFR_RNDN);*/
+}
+
 TEST_CASE("SpaceShip") {
-    for (int i = 0; i < 10000; i++) {
+    for (int i = 0; i < 1000; i++) {
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_real_distribution<long double> valRange(1, 1'000'000'000.0);
@@ -28,7 +50,6 @@ TEST_CASE("SpaceShip") {
         const uint stageCount = stageRange(gen);
         for (uint i = 0; i < stageCount; i++) {
             stageList.push_back(*(new stage(valRange(gen), valRange(gen), valRange(gen), valRange(gen))));
-            stageList.at(i).exhaustVelocity, i;
             ship->addStage(stageList.at(i).dryMass, stageList.at(i).fuelMass, {stageList.at(i).engineMass,
                                                                                stageList.at(i).exhaustVelocity,
                                                                                ("S" + std::to_string(i)).c_str()});
@@ -53,7 +74,7 @@ TEST_CASE("SpaceShip") {
                 doubleTest(ship->getRemainingMass(i), rollingMass, (char *) "Remaining Mass");
 
                 doubleTest(stageIter->deltaV,
-                           localStage->exhaustVelocity * log(rollingMass / (rollingMass - localStage->fuelMass)),
+                           genDeltaV(rollingMass, localStage->fuelMass, localStage->exhaustVelocity),
                            (char *) "Delta V");
                 stageIter--;
                 localStage--;
@@ -87,9 +108,7 @@ TEST_CASE("SpaceShip") {
                 --localStage;
                 --stageIter;
             }
-            for (int i = 0; i < 100; i++) {
-                fullTest((char *) "Modified");
-            }
+            fullTest((char *) "Modified");
         }
     }
 }

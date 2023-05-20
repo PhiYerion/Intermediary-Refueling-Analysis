@@ -1,10 +1,15 @@
 #ifndef SRC_SPACESHIP_H
 #define SRC_SPACESHIP_H
 
-
 #include <vector>
 #include <iostream>
 #include <valarray>
+#include <cmath>
+
+#include <iostream>
+#include <cmath>
+#include <cstdio>
+#include <mpfr.h>
 
 /**
  * @brief Represents an engine.
@@ -224,10 +229,28 @@ protected:
      */
     void genDeltaV (Stage* inpStage = nullptr) {       // for addStage, this should implement only calcs on stages before new
         if (inpStage) {
-            long double remainingMass = getRemainingMass(inpStage);
             deltaV -= inpStage->deltaV;
-            inpStage->deltaV = inpStage->engine.exhaustVelocity * log(remainingMass / (remainingMass - inpStage->fuelMass));
+
+            mpfr_t result;
+            mpfr_init2(result, 256);
+            mpfr_prec_t precision = 256;
+            mpfr_set_default_prec(precision);
+
+            mpfr_t denominator;
+            mpfr_init2(denominator, 256);
+            mpfr_set_ld(denominator, getRemainingMass(inpStage) - inpStage->fuelMass, MPFR_RNDN);
+
+            mpfr_set_ld(result, getRemainingMass(inpStage), MPFR_RNDN);
+
+            mpfr_log(result, denominator, MPFR_RNDN);
+            mpfr_mul_d(result, result, inpStage->engine.exhaustVelocity, MPFR_RNDN);
+            inpStage->deltaV = mpfr_get_ld(result, MPFR_RNDN);
+
             deltaV += inpStage->deltaV;
+
+            //Free resources
+            mpfr_clear(result);
+            mpfr_clear(denominator);
         } else {
             long double remainingMass = mass;
             deltaV = 0;
