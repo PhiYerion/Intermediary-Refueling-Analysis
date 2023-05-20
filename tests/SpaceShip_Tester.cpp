@@ -4,26 +4,22 @@
 #include "catch2/matchers/catch_matchers_floating_point.hpp"
 #include "../SpaceShip.h"
 
-void doubleTest(long double a, long double b, char* name) {
+void doubleTest(double a, double b, char* name) {
     printf("%20s variance: %15e\n", name, (a - b) / a);
     CHECK_THAT(a, Catch::Matchers::WithinRel(b, .00001));
 };
-
-TEST_CASE("getRemainingMass") {
-
-}
 
 TEST_CASE("SpaceShip") {
 
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<long double> valRange(1, 100'000.0);
+    std::uniform_real_distribution<double> valRange(1, 1'000'000'000.0);
     std::uniform_int_distribution<uint> stageRange(10, 30);
 
     struct stage {
-        long double dryMass, fuelMass, engineMass, exhaustVelocity;
+        double dryMass, fuelMass, engineMass, exhaustVelocity;
 
-        stage(long double dryMass, long double fuelMass, long double engineMass, long double exhaustVelocity) :
+        stage(double dryMass, double fuelMass, double engineMass, double exhaustVelocity) :
                 dryMass(dryMass), fuelMass(fuelMass), engineMass(engineMass), exhaustVelocity(exhaustVelocity) {}
     };
     std::vector<stage> stageList;
@@ -40,7 +36,7 @@ TEST_CASE("SpaceShip") {
 
 
     auto fullTest = [&stageList, &ship, &stageCount](char* name) {
-        long double rollingMass = 0;
+        double rollingMass = 0;
         auto localStage = --stageList.end();
         auto stageIter = --ship->getStages().end();
         printf("--------------------# %s --------------------\n", name);
@@ -55,8 +51,6 @@ TEST_CASE("SpaceShip") {
             rollingMass += stageIter->totalMass;
             doubleTest(ship->getRemainingMass(i), rollingMass, (char *) "Remaining Mass");
 
-            printf("DBG-1 %f * log(%f / (%f - %f))\n", localStage->exhaustVelocity, rollingMass, rollingMass, localStage->fuelMass);
-            printf("DBG-2 %f\n", stageIter->deltaV);
             doubleTest(stageIter->deltaV,
                        localStage->exhaustVelocity * log(rollingMass / (rollingMass - localStage->fuelMass)),
                        (char *) "Delta V");
@@ -79,7 +73,7 @@ TEST_CASE("SpaceShip") {
                 localStage->dryMass = valRange(gen);
                 ship->setStageDryMass(&(*stageIter), localStage->dryMass);
             }
-            /*if (0 < modifyValChance(gen)) {
+            if (0 < modifyValChance(gen)) {
                 localStage->fuelMass = valRange(gen);
                 ship->setStageFuelMass(&(*stageIter), localStage->dryMass);
             }
@@ -87,7 +81,7 @@ TEST_CASE("SpaceShip") {
                 localStage->engineMass = valRange(gen);
                 localStage->exhaustVelocity = valRange(gen);
                 ship->setStageEngine(&(*stageIter), {localStage->engineMass, localStage->exhaustVelocity, ("S" + std::to_string(i)).c_str()});
-            }*/
+            }
             --localStage;
             --stageIter;
         }
