@@ -9,7 +9,7 @@ add_executable(src
 add_subdirectory(lib/Catch2)
 add_executable(tests tests/SpaceShip_Tester.cpp)
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
-SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -lmpfr -lgmp")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -lmpfr -lgmp -g -O0")
 
 include(CTest)
 include(Catch)
