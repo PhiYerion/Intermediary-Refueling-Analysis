@@ -1,13 +1,11 @@
 #ifndef SRC_SPACESHIP_H
 #define SRC_SPACESHIP_H
 
-
 #include <vector>
 #include <iostream>
 #include <valarray>
 #include <cmath>
 #include <iostream>
-#include <cmath>
 #include <cstdio>
 #include "lib/mpfr.h"
 
@@ -199,19 +197,19 @@ public:
     }
 
     void printStats() {
-        printf("DeltaV: %fm/s\n", this->getDeltaV());
-        printf("Mass: %fkg\n", this->getMass());
+        printf("DeltaV: %Lfm/s\n", this->getDeltaV());
+        printf("Mass: %Lfkg\n", this->getMass());
         uint i = 0;
         for (auto stagesiter = this->stages.begin(); stagesiter != this->stages.end(); stagesiter++) {
             printf("Stage %u:\n", i);
-            printf("\tTotal Stage Mass: %fkg\n", stagesiter->totalMass);
-            printf("\tTotal Mass for remaining stages: %fkg\n", this->getRemainingMass(&(*stagesiter)));
-            printf("\tDeltaV: %fm/s\n", stagesiter->deltaV);
-            printf("\tDryMass: %fkg\n", stagesiter->dryMass);
-            printf("\tFuelMass: %fkg\n", stagesiter->fuelMass);
+            printf("\tTotal Stage Mass: %Lfkg\n", stagesiter->totalMass);
+            printf("\tTotal Mass for remaining stages: %Lfkg\n", this->getRemainingMass(&(*stagesiter)));
+            printf("\tDeltaV: %Lfm/s\n", stagesiter->deltaV);
+            printf("\tDryMass: %Lfkg\n", stagesiter->dryMass);
+            printf("\tFuelMass: %Lfkg\n", stagesiter->fuelMass);
             printf("\tEngine %s:\n", stagesiter->engine.name);
-            printf("\t\tMass: %fkg\n", stagesiter->engine.mass);
-            printf("\t\tExhaustVelocity: %fm/s\n", stagesiter->engine.exhaustVelocity);
+            printf("\t\tMass: %Lfkg\n", stagesiter->engine.mass);
+            printf("\t\tExhaustVelocity: %Lfm/s\n", stagesiter->engine.exhaustVelocity);
         }
     }
 
@@ -229,10 +227,28 @@ protected:
      */
     void genDeltaV (Stage* inpStage = nullptr) {       // for addStage, this should implement only calcs on stages before new
         if (inpStage) {
-            long double remainingMass = getRemainingMass(inpStage);
             deltaV -= inpStage->deltaV;
-            inpStage->deltaV = inpStage->engine.exhaustVelocity * log(remainingMass / (remainingMass - inpStage->fuelMass));
+            mpfr_prec_t precision = 256;
+            mpfr_set_default_prec(precision);
+
+            mpfr_t result;
+            mpfr_init2(result, 256);
+            mpfr_set_ld(result, getRemainingMass(inpStage), MPFR_RNDN);
+
+            mpfr_t denominator;
+            mpfr_init2(denominator, 256);
+            mpfr_set_ld(denominator, getRemainingMass(inpStage) - inpStage->fuelMass, MPFR_RNDN);
+
+            mpfr_div(result, result, denominator, MPFR_RNDN);
+            mpfr_log(result, result, MPFR_RNDN);
+            mpfr_mul_d(result, result, inpStage->engine.exhaustVelocity, MPFR_RNDN);
+            inpStage->deltaV = mpfr_get_ld(result, MPFR_RNDN);
+
             deltaV += inpStage->deltaV;
+
+            //Free resources
+            mpfr_clear(result);
+            mpfr_clear(denominator);
         } else {
             long double remainingMass = mass;
             deltaV = 0;
