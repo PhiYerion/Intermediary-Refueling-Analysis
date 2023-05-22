@@ -5,6 +5,11 @@
 #include <vector>
 #include <iostream>
 #include <valarray>
+#include <cmath>
+#include <iostream>
+#include <cmath>
+#include <cstdio>
+#include "lib/mpfr.h"
 
 /**
  * @brief Represents an engine.

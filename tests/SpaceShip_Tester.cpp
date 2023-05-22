@@ -3,6 +3,8 @@
 #include "catch2/catch_test_macros.hpp"
 #include "catch2/matchers/catch_matchers_floating_point.hpp"
 #include "../SpaceShip.h"
+#include <cstdio>
+#include "../lib/mpfr.h"
 
 void doubleTest(long double a, long double b, char* name) {
     printf("%20s variance: %15e\n", name, 100 * (a - b) / a);
