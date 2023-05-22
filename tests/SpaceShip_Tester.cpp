@@ -80,7 +80,7 @@ TEST_CASE("SpaceShip") {
                 doubleTest(ship->getRemainingMass(i), rollingMass, (char *) "Remaining Mass");
 
                 printf("ln(%Lf/(%Lf - %Lf)) * %Lf | %Lf", rollingMass, rollingMass, (*localStage)->fuelMass,
-                       (*localStage)->exhaustVelocity), stageIter->deltaV;
+                       (*localStage)->exhaustVelocity, stageIter->deltaV);
                 doubleTest(stageIter->deltaV,
                            genDeltaV(rollingMass, (*localStage)->fuelMass, (*localStage)->exhaustVelocity),
                            (char *) "Delta V");
