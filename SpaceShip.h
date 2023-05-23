@@ -154,7 +154,7 @@ public:
         mass += newMass - stage->dryMass;
         stage->dryMass = newMass;
         stage->totalMass = stage->dryMass + stage->fuelMass + stage->engine.mass;
-        genDeltaV(stage);
+        genDeltaV();
     }
 
     /**
@@ -166,7 +166,7 @@ public:
         mass += newMass - stage->fuelMass;
         stage->fuelMass = newMass;
         stage->totalMass = stage->dryMass + stage->fuelMass + stage->engine.mass;
-        genDeltaV(stage);
+        genDeltaV();
     }
 
     /**
@@ -178,7 +178,7 @@ public:
         mass += newEngine.mass - stage->engine.mass;
         stage->engine = newEngine;
         stage->totalMass = stage->dryMass + stage->fuelMass + stage->engine.mass;
-        genDeltaV(stage);
+        genDeltaV();
     }
 
     /**
