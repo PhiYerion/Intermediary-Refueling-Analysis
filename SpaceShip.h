@@ -44,6 +44,9 @@ public:
         deltaV = 0;
         stages = {};
     }
+    ~SpaceShip() {
+        mpfr_free_cache();
+    }
 
     /**
       * @brief Returns the vector of stages.
@@ -228,8 +231,6 @@ protected:
     void genDeltaV (Stage* inpStage = nullptr) {       // for addStage, this should implement only calcs on stages before new
         if (inpStage) {
             deltaV -= inpStage->deltaV;
-            mpfr_prec_t precision = 256;
-            mpfr_set_default_prec(precision);
 
             mpfr_t result;
             mpfr_init2(result, 256);

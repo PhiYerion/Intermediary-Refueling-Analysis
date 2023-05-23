@@ -126,5 +126,6 @@ TEST_CASE("SpaceShip") {
             }
             delete (ship);
         }
+    mpfr_free_cache();
     }
 //}
