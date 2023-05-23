@@ -226,37 +226,29 @@ protected:
      * If inpStage is specified, it calculates the delta-V only for stages before the new stage.
      * Otherwise, it calculates the delta-V for all stages.
      */
-    void genDeltaV (Stage* inpStage = nullptr) {       // for addStage, this should implement only calcs on stages before new
-        if (inpStage) {
-            deltaV -= inpStage->deltaV;
+    void genDeltaV () {       // for addStage, this should implement only calcs on stages before new
+        mpfr_t result;
+        mpfr_init2(result, 256);
 
-            mpfr_t result;
-            mpfr_init2(result, 256);
-            mpfr_set_ld(result, getRemainingMass(inpStage), MPFR_RNDN);
+        mpfr_t denominator;
+        mpfr_init2(denominator, 256);
 
-            mpfr_t denominator;
-            mpfr_init2(denominator, 256);
-            mpfr_set_ld(denominator, getRemainingMass(inpStage) - inpStage->fuelMass, MPFR_RNDN);
+        long double remainingMass = mass;
+        deltaV = 0;
+        for (auto &stage: stages) {
+            mpfr_set_ld(result, remainingMass, MPFR_RNDN);
+            mpfr_set_ld(denominator, remainingMass - stage.fuelMass, MPFR_RNDN);
 
             mpfr_div(result, result, denominator, MPFR_RNDN);
             mpfr_log(result, result, MPFR_RNDN);
-            mpfr_mul_d(result, result, inpStage->engine.exhaustVelocity, MPFR_RNDN);
-            inpStage->deltaV = mpfr_get_ld(result, MPFR_RNDN);
+            mpfr_mul_d(result, result, stage.engine.exhaustVelocity, MPFR_RNDN);
 
-            deltaV += inpStage->deltaV;
-
-            //Free resources
-            mpfr_clear(result);
-            mpfr_clear(denominator);
-        } else {
-            long double remainingMass = mass;
-            deltaV = 0;
-            for (auto &stage: stages) {
-                stage.deltaV = stage.engine.exhaustVelocity * log(remainingMass / (remainingMass - stage.fuelMass));
-                deltaV += stage.deltaV;
-                remainingMass -= stage.totalMass;
-            }
+            stage.deltaV = mpfr_get_ld(result, MPFR_RNDN);
+            deltaV += stage.deltaV;
+            remainingMass -= stage.totalMass;
         }
+        mpfr_clear(result);
+        mpfr_clear(denominator);
     }
 
 };
