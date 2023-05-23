@@ -39,11 +39,9 @@ struct Stage {
  */
 class SpaceShip {
 public:
-    SpaceShip() {
-        mass = 0;
-        deltaV = 0;
-        stages = {};
-    }
+    SpaceShip() :
+            mass(0), deltaV(0), stages({}) {}
+            
     ~SpaceShip() {
         mpfr_free_cache();
     }
