@@ -81,8 +81,9 @@ TEST_CASE("SpaceShip") {
                 rollingMass += stageIter->totalMass;
                 doubleTest(ship->getRemainingMass(i), rollingMass, (char *) "Remaining Mass");
 
-                printf("ln(%Lf/(%Lf - %Lf)) * %Lf | %Lf", rollingMass, rollingMass, (*localStage)->fuelMass,
-                       (*localStage)->exhaustVelocity, stageIter->deltaV);
+                printf("ln(%Lf/(%Lf - %Lf)) * %Lf | %Lf : %Lf \n", rollingMass, rollingMass, (*localStage)->fuelMass,
+                       (*localStage)->exhaustVelocity, stageIter->deltaV,
+                        genDeltaV(rollingMass, (*localStage)->fuelMass, (*localStage)->exhaustVelocity));
                 doubleTest(stageIter->deltaV,
                            genDeltaV(rollingMass, (*localStage)->fuelMass, (*localStage)->exhaustVelocity),
                            (char *) "Delta V");
@@ -126,5 +127,6 @@ TEST_CASE("SpaceShip") {
             }
             delete (ship);
         }
+    mpfr_free_cache();
     }
 //}
