@@ -11,7 +11,7 @@
 #include <stdexcept>
 
 /*
- * Functions for MPFR for this project. Largely wraps the MPFR library.
+ * Handles MPFR operations for this project.
  */
 class mpfr_interface {
 private:
