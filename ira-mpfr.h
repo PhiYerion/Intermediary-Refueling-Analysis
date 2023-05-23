@@ -10,10 +10,13 @@
 #include <type_traits>
 #include <stdexcept>
 
+/*
+ * Functions for MPFR for this project. Largely wraps the MPFR library.
+ */
 class mpfr_interface {
-public:
+private:
     const static unsigned int precision = 1024;
-
+public:
     static void DeltaV (mpfr_t* result, mpfr_t mass, mpfr_t fuelMass, mpfr_t exhaustVelocity) {
         mpfr_prec_t mpfrPrecision = precision;
         mpfr_set_default_prec(mpfrPrecision);
@@ -49,11 +52,7 @@ public:
         {
             throw std::invalid_argument("Unsupported type.");
         }
-
-        return result;
     }
-
-private:
 };
 
 #endif //IRA_MPFR_INTERFACE_H
