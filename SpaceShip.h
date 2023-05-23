@@ -249,6 +249,8 @@ protected:
             deltaV += stage.deltaV;
             remainingMass -= stage.totalMass;
         }
+        mpfr_clear(result);
+        mpfr_clear(denominator);
     }
 
 };
