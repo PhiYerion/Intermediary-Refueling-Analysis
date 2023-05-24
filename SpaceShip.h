@@ -8,23 +8,67 @@
 #include <iostream>
 #include <cstdio>
 #include "lib/mpfr.h"
+#include "cstring"
 #define PRECISION 1024
 /**
  * @brief Represents an engine.
  */
 struct Engine {
+
+    mpfr_t mass,                /**< Mass of the engine. */
+    exhaustVelocity;            /**< Exhaust velocity of the engine. */
+    char* name;           /**< Name of the engine. */
+
     Engine() {
         mpfr_set_default_prec(PRECISION);
         mpfr_init(mass);
         mpfr_init(exhaustVelocity);
     }
     ~Engine() {
+        free(name);
         mpfr_clear(mass);
         mpfr_clear(exhaustVelocity);
     }
-    mpfr_t mass,                /**< Mass of the engine. */
-    exhaustVelocity;            /**< Exhaust velocity of the engine. */
-    const char* name;           /**< Name of the engine. */
+
+    Engine& operator=(const Engine& other) {
+        if (this == &other) {
+            return *this; // Handle self-assignment
+        }
+        mpfr_set(mass, other.mass, MPFR_RNDN);
+        mpfr_set(exhaustVelocity, other.exhaustVelocity, MPFR_RNDN);
+
+        name = new char[strlen(other.name)];
+        strcpy(name, other.name);
+
+        return *this;
+    }
+    Engine(const Engine& other) {
+        mpfr_init(mass);
+        mpfr_init(exhaustVelocity);
+        mpfr_set(mass, other.mass, MPFR_RNDN);
+        mpfr_set(exhaustVelocity, other.exhaustVelocity, MPFR_RNDN);
+
+        name = new char[strlen(other.name)];
+        strcpy(name, other.name);
+    }
+
+    Engine& operator=(Engine&& other)  noexcept {
+        if (this == &other) {
+            return *this; // Handle self-assignment
+        }
+
+        mass[0] = other.mass[0];
+        exhaustVelocity[0] = other.exhaustVelocity[0];
+        name = other.name;
+
+
+        return *this;
+    }
+    Engine(Engine&& other) noexcept {
+        mass[0] = other.mass[0];
+        exhaustVelocity[0] = other.exhaustVelocity[0];
+        name = other.name;
+    }
 };
 
 /**
@@ -107,10 +151,10 @@ public:
     ~SpaceShip() {
         mpfr_clear(mass);
         mpfr_clear(deltaV);
-        mpfr_free_cache();
         for (auto & stage : stages) {
             delete(stage);
         }
+        mpfr_free_cache();
     }
 
     /**
@@ -152,8 +196,8 @@ public:
     * @param stage Pointer to the stage.
     * @return Engine of the stage.
     */
-    Engine getEngine (Stage* stage) {
-        return stage -> engine;
+    Engine* getEngine (Stage* stage) {
+        return &stage -> engine;
     }
 
     /**
@@ -245,14 +289,14 @@ public:
      * @param stage Pointer to the stage.
      * @param newEngine The new engine.
      */
-    void setStageEngine(Stage* stage, const Engine newEngine) {
+    void setStageEngine(Stage* stage, Engine* newEngine) {
         mpfr_sub(mass, mass, stage->engine.mass, MPFR_RNDN);
-        mpfr_add(mass, mass, newEngine.mass, MPFR_RNDN);
+        mpfr_add(mass, mass, newEngine->mass, MPFR_RNDN);
 
         mpfr_sub(stage->totalMass, stage->totalMass, stage->engine.mass, MPFR_RNDN);
-        mpfr_add(stage->totalMass, stage->totalMass, newEngine.mass, MPFR_RNDN);
+        mpfr_add(stage->totalMass, stage->totalMass, newEngine->mass, MPFR_RNDN);
 
-        stage->engine = newEngine;
+        stage->engine = std::move(*newEngine);
         genDeltaV();
     }
 
@@ -263,7 +307,7 @@ public:
      * @param engine The engine used in the stage.
      * @param index The index at which to insert the stage (optional).
      */
-    void addStage(const double dryMass, const double fuelMass, const Engine engine, const int index = -1) {
+    void addStage(const double dryMass, const double fuelMass, const double engineMass, const double engineExhaustVelocity, char* engineName, const int index = -1) {
 
         Stage* stage;
         if (index != -1) {
@@ -274,14 +318,37 @@ public:
             stage = stages.back();
             //std::cerr << "Warning: index not specified for addStage, appending to end of stages\n";
         }
-        stage->engine.name = engine.name;
+        stage->engine.name = engineName;
 
         mpfr_set_ld(stage->dryMass, dryMass, MPFR_RNDN);
         mpfr_set_ld(stage->fuelMass, fuelMass, MPFR_RNDN);
-        mpfr_set(stage->engine.mass, engine.mass, MPFR_RNDN);
-        mpfr_set(stage->engine.exhaustVelocity, engine.exhaustVelocity, MPFR_RNDN);
+        mpfr_set_ld(stage->engine.mass, engineMass, MPFR_RNDN);
+        mpfr_set_ld(stage->engine.exhaustVelocity, engineExhaustVelocity, MPFR_RNDN);
 
-        mpfr_set(stage->totalMass, engine.mass, MPFR_RNDN);
+        mpfr_set_ld(stage->totalMass, engineMass, MPFR_RNDN);
+        mpfr_add_d(stage->totalMass, stage->totalMass, dryMass, MPFR_RNDN);
+
+        mpfr_add(mass, mass, stage->totalMass, MPFR_RNDN);
+        genDeltaV();
+    }
+
+    void addStage(const double dryMass, const double fuelMass, Engine engine, const int index = -1) {
+
+        Stage* stage;
+        if (index != -1) {
+            stages.insert(stages.begin() + index, new Stage());
+            stage = stages[index];
+        } else {
+            stages.push_back(new Stage());
+            stage = stages.back();
+            //std::cerr << "Warning: index not specified for addStage, appending to end of stages\n";
+        }
+        stage->engine = engine;
+
+        mpfr_set_ld(stage->dryMass, dryMass, MPFR_RNDN);
+        mpfr_set_ld(stage->fuelMass, fuelMass, MPFR_RNDN);
+
+        mpfr_set(stage->totalMass, stage->engine.mass, MPFR_RNDN);
         mpfr_add_d(stage->totalMass, stage->totalMass, dryMass, MPFR_RNDN);
 
         mpfr_add(mass, mass, stage->totalMass, MPFR_RNDN);

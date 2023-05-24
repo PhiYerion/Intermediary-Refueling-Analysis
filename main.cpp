@@ -4,7 +4,7 @@
 
 int main () {
     auto* ship = new SpaceShip();
-    Engine newEngine;
+    Engine newEngine = Engine();
     mpfr_set_ld(newEngine.mass, 100, MPFR_RNDN);
     mpfr_set_ld(newEngine.exhaustVelocity, 1000, MPFR_RNDN);
     newEngine.name = "S0";
