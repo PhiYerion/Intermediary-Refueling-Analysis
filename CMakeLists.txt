@@ -3,8 +3,6 @@ project(IRA)
 
 set(CMAKE_CXX_STANDARD 14)
 
-SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -lmpfr -lgmp -g -O0")
-
 add_executable(ira main.cpp)
 
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -L ./lib -lmpfr -lgmp -g -O0")

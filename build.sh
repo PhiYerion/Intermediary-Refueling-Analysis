@@ -1,7 +1,8 @@
 #!/bin/bash
 set -x
+pwd
+ls
 
-ld -L/home/user/Projects/EML2-to-Mars/src/lib -lmpfr
 git submodule init
 git submodule update
 mkdir build
