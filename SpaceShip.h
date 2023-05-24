@@ -19,8 +19,8 @@ struct Engine {
         mpfr_init(exhaustVelocity);
     }
     ~Engine() {
-/*        mpfr_clear(mass);
-        mpfr_clear(exhaustVelocity);*/
+        mpfr_clear(mass);
+        mpfr_clear(exhaustVelocity);
     }
     mpfr_t mass,                /**< Mass of the engine. */
     exhaustVelocity;            /**< Exhaust velocity of the engine. */
@@ -41,10 +41,10 @@ struct Stage {
         mpfr_init(totalMass);
     }
     ~Stage() {
+        mpfr_clear(deltaV);
         mpfr_clear(dryMass);
         mpfr_clear(fuelMass);
         mpfr_clear(totalMass);
-        mpfr_clear(deltaV);
     }
     Engine engine;             /**< Engine used in the stage. */
     mpfr_t deltaV,             /**< Delta-V of the stage. */
@@ -105,7 +105,12 @@ public:
     }
             
     ~SpaceShip() {
+        mpfr_clear(mass);
+        mpfr_clear(deltaV);
         mpfr_free_cache();
+        for (auto & stage : stages) {
+            delete(stage);
+        }
     }
 
     /**
