@@ -107,10 +107,10 @@ public:
     ~SpaceShip() {
         mpfr_clear(mass);
         mpfr_clear(deltaV);
-        mpfr_free_cache();
         for (auto & stage : stages) {
             delete(stage);
         }
+        mpfr_free_cache();
     }
 
     /**
@@ -263,7 +263,7 @@ public:
      * @param engine The engine used in the stage.
      * @param index The index at which to insert the stage (optional).
      */
-    void addStage(const double dryMass, const double fuelMass, const Engine engine, const int index = -1) {
+    void addStage(const double dryMass, const double fuelMass, const double engineMass, const double engineExhaustVelocity, const char* engineName, const int index = -1) {
 
         Stage* stage;
         if (index != -1) {
@@ -274,14 +274,14 @@ public:
             stage = stages.back();
             //std::cerr << "Warning: index not specified for addStage, appending to end of stages\n";
         }
-        stage->engine.name = engine.name;
+        stage->engine.name = engineName;
 
         mpfr_set_ld(stage->dryMass, dryMass, MPFR_RNDN);
         mpfr_set_ld(stage->fuelMass, fuelMass, MPFR_RNDN);
-        mpfr_set(stage->engine.mass, engine.mass, MPFR_RNDN);
-        mpfr_set(stage->engine.exhaustVelocity, engine.exhaustVelocity, MPFR_RNDN);
+        mpfr_set_ld(stage->engine.mass, engineMass, MPFR_RNDN);
+        mpfr_set_ld(stage->engine.exhaustVelocity, engineExhaustVelocity, MPFR_RNDN);
 
-        mpfr_set(stage->totalMass, engine.mass, MPFR_RNDN);
+        mpfr_set_ld(stage->totalMass, engineMass, MPFR_RNDN);
         mpfr_add_d(stage->totalMass, stage->totalMass, dryMass, MPFR_RNDN);
 
         mpfr_add(mass, mass, stage->totalMass, MPFR_RNDN);
