@@ -17,7 +17,7 @@ struct Engine {
 
     mpfr_t mass,                /**< Mass of the engine. */
     exhaustVelocity;            /**< Exhaust velocity of the engine. */
-    char* name;           /**< Name of the engine. */
+    char* name;                 /**< Name of the engine. */
 
     Engine() {
         mpfr_set_default_prec(PRECISION);
@@ -25,11 +25,15 @@ struct Engine {
         mpfr_init(exhaustVelocity);
     }
     ~Engine() {
-        free(name);
-        mpfr_clear(mass);
-        mpfr_clear(exhaustVelocity);
+
+        if (mass[0]._mpfr_d != nullptr) {                                    // Errors pretaining to erroneous clearing
+            free(name);                                                 // should be resolved, so the lack of hard
+            mpfr_clear(mass);                                                // errors when nullptr is encountered is
+            mpfr_clear(exhaustVelocity);                                     // acceptable and needed due to nullptrs
+        }                                                                    // in the case that there is a move operation
     }
 
+    // Copy operations:
     Engine& operator=(const Engine& other) {
         if (this == &other) {
             return *this; // Handle self-assignment
@@ -37,7 +41,7 @@ struct Engine {
         mpfr_set(mass, other.mass, MPFR_RNDN);
         mpfr_set(exhaustVelocity, other.exhaustVelocity, MPFR_RNDN);
 
-        name = new char[strlen(other.name)];
+        name = new char[strlen(other.name) + 1];
         strcpy(name, other.name);
 
         return *this;
@@ -48,26 +52,36 @@ struct Engine {
         mpfr_set(mass, other.mass, MPFR_RNDN);
         mpfr_set(exhaustVelocity, other.exhaustVelocity, MPFR_RNDN);
 
-        name = new char[strlen(other.name)];
+        name = new char[strlen(other.name) + 1];
         strcpy(name, other.name);
     }
 
+    // Move operations:
     Engine& operator=(Engine&& other)  noexcept {
         if (this == &other) {
             return *this; // Handle self-assignment
         }
 
         mass[0] = other.mass[0];
-        exhaustVelocity[0] = other.exhaustVelocity[0];
-        name = other.name;
+        other.mass[0]._mpfr_d = nullptr;
 
+        exhaustVelocity[0] = other.exhaustVelocity[0];
+        other.exhaustVelocity[0]._mpfr_d = nullptr;
+
+        name = other.name;
+        other.name = nullptr;
 
         return *this;
     }
     Engine(Engine&& other) noexcept {
         mass[0] = other.mass[0];
+        other.mass[0]._mpfr_d = nullptr;
+
         exhaustVelocity[0] = other.exhaustVelocity[0];
+        other.exhaustVelocity[0]._mpfr_d = nullptr;
+
         name = other.name;
+        other.name = nullptr;
     }
 };
 
@@ -77,6 +91,12 @@ struct Engine {
  * Any loss in non-fuel mass mid-stage will not be accounted for.
  */
 struct Stage {
+    Engine engine;                /**< Engine used in the stage. */
+    mpfr_t deltaV,                /**< Delta-V of the stage. */
+    dryMass,                      /**< Dry mass of the stage (excluding engine mass). */
+    fuelMass,                     /**< Fuel mass of the stage. */
+    totalMass;                    /**< Total mass of the stage (including engine mass). */
+
     Stage() {
         mpfr_set_default_prec(PRECISION);
         mpfr_init(deltaV);
@@ -90,11 +110,54 @@ struct Stage {
         mpfr_clear(fuelMass);
         mpfr_clear(totalMass);
     }
-    Engine engine;             /**< Engine used in the stage. */
-    mpfr_t deltaV,             /**< Delta-V of the stage. */
-    dryMass,            /**< Dry mass of the stage (excluding engine mass). */
-    fuelMass,           /**< Fuel mass of the stage. */
-    totalMass;      /**< Total mass of the stage (including engine mass). */
+
+    // Copy operations:
+    Stage& operator=(const Stage& other) {
+        if (this == &other) {                                               // Handle self-assignment
+            return *this;
+        }
+        mpfr_set(deltaV, other.deltaV, MPFR_RNDN);                          // Make sure that the underlying mpfr_t values
+        mpfr_set(dryMass, other.dryMass, MPFR_RNDN);                        // are copied instead of just the pointers
+        mpfr_set(fuelMass, other.fuelMass, MPFR_RNDN);
+        mpfr_set(totalMass, other.totalMass, MPFR_RNDN);
+        engine = other.engine;                                              // This is a copy operation
+
+        return *this;
+    }
+    Stage(const Stage& other) {
+        mpfr_init(deltaV);                                                  // Make sure that the underlying mpfr_t values
+        mpfr_init(dryMass);                                                 // are copied instead of just the pointers.
+        mpfr_init(fuelMass);                                                // This is effectively the same as the
+        mpfr_init(totalMass);                                               // move operator above, but also initializes
+        mpfr_set(deltaV, other.deltaV, MPFR_RNDN);                          // the mpfr_t values.
+        mpfr_set(dryMass, other.dryMass, MPFR_RNDN);
+        mpfr_set(fuelMass, other.fuelMass, MPFR_RNDN);
+        mpfr_set(totalMass, other.totalMass, MPFR_RNDN);
+
+        engine = other.engine;                                              // This is a copy operation
+    }
+
+    // Move operations:
+    Stage& operator=(Stage&& other)  noexcept {
+        if (this == &other) {
+            return *this;                                                   // Handle self-assignment
+        }
+
+        deltaV[0] = other.deltaV[0];                                        // Point the new mpfr_t pointers to the data
+        dryMass[0] = other.dryMass[0];                                      // of the original object.
+        fuelMass[0] = other.fuelMass[0];
+        totalMass[0] = other.totalMass[0];
+        engine = std::move(other.engine);
+
+        return *this;
+    }
+    Stage(Stage&& other) noexcept {
+        deltaV[0] = other.deltaV[0];
+        dryMass[0] = other.dryMass[0];
+        fuelMass[0] = other.fuelMass[0];
+        totalMass[0] = other.totalMass[0];
+        engine = std::move(other.engine);
+    }
 };
 
 /**
@@ -343,7 +406,7 @@ public:
             stage = stages.back();
             //std::cerr << "Warning: index not specified for addStage, appending to end of stages\n";
         }
-        stage->engine = engine;
+        stage->engine = std::move(engine);
 
         mpfr_set_ld(stage->dryMass, dryMass, MPFR_RNDN);
         mpfr_set_ld(stage->fuelMass, fuelMass, MPFR_RNDN);
