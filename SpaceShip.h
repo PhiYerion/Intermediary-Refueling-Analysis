@@ -8,14 +8,23 @@
 #include <iostream>
 #include <cstdio>
 #include "lib/mpfr.h"
-
+#define PRECISION 1024
 /**
  * @brief Represents an engine.
  */
 struct Engine {
-    long double mass;               /**< Mass of the engine. */
-    long double exhaustVelocity;    /**< Exhaust velocity of the engine. */
-    const char* name;          /**< Name of the engine. */
+    Engine() {
+        mpfr_set_default_prec(PRECISION);
+        mpfr_init(mass);
+        mpfr_init(exhaustVelocity);
+    }
+    ~Engine() {
+/*        mpfr_clear(mass);
+        mpfr_clear(exhaustVelocity);*/
+    }
+    mpfr_t mass,                /**< Mass of the engine. */
+    exhaustVelocity;            /**< Exhaust velocity of the engine. */
+    const char* name;           /**< Name of the engine. */
 };
 
 /**
@@ -24,11 +33,24 @@ struct Engine {
  * Any loss in non-fuel mass mid-stage will not be accounted for.
  */
 struct Stage {
+    Stage() {
+        mpfr_set_default_prec(PRECISION);
+        mpfr_init(deltaV);
+        mpfr_init(dryMass);
+        mpfr_init(fuelMass);
+        mpfr_init(totalMass);
+    }
+    ~Stage() {
+        mpfr_clear(dryMass);
+        mpfr_clear(fuelMass);
+        mpfr_clear(totalMass);
+        mpfr_clear(deltaV);
+    }
     Engine engine;             /**< Engine used in the stage. */
-    long double deltaV,             /**< Delta-V of the stage. */
+    mpfr_t deltaV,             /**< Delta-V of the stage. */
     dryMass,            /**< Dry mass of the stage (excluding engine mass). */
     fuelMass,           /**< Fuel mass of the stage. */
-    totalMass = 0;      /**< Total mass of the stage (including engine mass). */
+    totalMass;      /**< Total mass of the stage (including engine mass). */
 };
 
 /**
@@ -38,9 +60,47 @@ struct Stage {
  * Directly setting variables will produce inaccurate measurements, so they are protected.
  */
 class SpaceShip {
+protected:
+    std::vector<Stage*> stages;  /**< Vector of stages. */
+    mpfr_t mass,                /**< Total mass of the spaceship. */
+    deltaV;                     /**< Total delta-V of the spaceship. */
+
+    /**
+     * @brief Generates the delta-V for the spaceship or a specific stage.
+     * @param inpStage Pointer to the input stage (optional).
+     *
+     * If inpStage is specified, it calculates the delta-V only for stages before the new stage.
+     * Otherwise, it calculates the delta-V for all stages.
+     */
+    void genDeltaV () {       // for addStage, this should implement only calcs on stages before new
+
+        mpfr_t denominator;
+        mpfr_init2(denominator, PRECISION);
+
+        mpfr_t remainingMass;
+        mpfr_init2(remainingMass, PRECISION);
+        mpfr_set(remainingMass, mass, MPFR_RNDN);
+        mpfr_set_d(deltaV, 0, MPFR_RNDN);
+        for (auto &stage: stages) {
+            mpfr_set(stage->deltaV, remainingMass, MPFR_RNDN);
+            mpfr_sub(denominator, denominator, stage->fuelMass, MPFR_RNDN);
+            mpfr_div(stage->deltaV, stage->deltaV, denominator, MPFR_RNDN);
+            mpfr_log(stage->deltaV, stage->deltaV, MPFR_RNDN);
+            mpfr_mul(stage->deltaV, stage->deltaV, stage->engine.exhaustVelocity, MPFR_RNDN);
+
+            mpfr_add(deltaV, deltaV, stage->deltaV, MPFR_RNDN);
+            mpfr_sub(remainingMass, remainingMass, stage->totalMass, MPFR_RNDN);
+        }
+        mpfr_clear(denominator);
+        mpfr_clear(remainingMass);
+    }
+
 public:
-    SpaceShip() :
-            mass(0), deltaV(0), stages({}) {}
+    SpaceShip() {
+        mpfr_set_default_prec(PRECISION);
+        mpfr_init(mass);
+        mpfr_init(deltaV);
+    }
             
     ~SpaceShip() {
         mpfr_free_cache();
@@ -50,7 +110,7 @@ public:
       * @brief Returns the vector of stages.
       * @return Vector of stages.
       */
-    std::vector<Stage>* getStages () {
+    std::vector<Stage*>* getStages () {
         return &stages;
     }
 
@@ -59,27 +119,25 @@ public:
      * @param inputStage The stage.
      * @return Mass of rocket during this stage prior to any burn or mass loss.
      */
-    long double getRemainingMass (const Stage* inputStage) {
-        long double remainingMass = mass;
+    void getRemainingMass (mpfr_t result, const Stage* inputStage) {
+        mpfr_set(result, mass, MPFR_RNDN);
         for (auto & stage : stages) {
-            if (&stage == inputStage) {
-                return remainingMass;
+            if (stage == inputStage) {
+                return;
             }
-            remainingMass -= stage.totalMass;
+            mpfr_sub(result, result, stage->totalMass, MPFR_RNDN);
         }
-        return remainingMass;
     }
-    long double getRemainingMass (const int inputStageIndex) {
-        long double remainingMass = mass;
+    void getRemainingMass (mpfr_t result, const int inputStageIndex) {
+        mpfr_set(result, mass, MPFR_RNDN);
         uint i = 0;
         for (const auto& stage : stages) {
             if (i == inputStageIndex) {
-                return remainingMass;
+                return;
             }
-            remainingMass -= stage.totalMass;
+            mpfr_sub(result, result, stage->totalMass, MPFR_RNDN);
             i++;
         }
-        std::cerr << "Error: Stage index out of range." << std::endl;
     }
 
     /**
@@ -97,7 +155,7 @@ public:
     * @return Dry mass of the stage.
     */
     long double getStageDryMass(Stage* stage) {
-        return stage->dryMass;
+        return mpfr_get_ld(stage->dryMass, MPFR_RNDN);
     }
 
     /**
@@ -106,7 +164,7 @@ public:
      * @return Fuel mass of the stage.
      */
     long double getStageFuelMass(Stage* stage) {
-        return stage->fuelMass;
+        return mpfr_get_ld(stage->fuelMass, MPFR_RNDN);
     }
 
     /**
@@ -115,7 +173,7 @@ public:
      * @return Delta-V of the stage.
      */
     long double getStageDeltaV(Stage* stage) {
-        return stage->deltaV;
+        return mpfr_get_ld(stage->deltaV, MPFR_RNDN);
     }
 
     /**
@@ -124,7 +182,7 @@ public:
      * @return Total mass of the stage.
      */
     long double getStrageTotalMass(Stage* stage) {
-        return stage->totalMass;
+        return mpfr_get_ld(stage->totalMass, MPFR_RNDN);
     }
 
     /**
@@ -132,7 +190,7 @@ public:
      * @return Total mass of the spaceship.
      */
     long double getMass() {
-        return mass;
+        return mpfr_get_ld(mass, MPFR_RNDN);
     }
 
     /**
@@ -140,7 +198,7 @@ public:
      * @return Total delta-V of the spaceship.
      */
     long double getDeltaV() {
-        return deltaV;
+        return mpfr_get_ld(deltaV, MPFR_RNDN);
     }
 
     /**
@@ -148,10 +206,14 @@ public:
      * @param stage Pointer to the stage.
      * @param newMass The new dry mass.
      */
-    void setStageDryMass(Stage* stage, const long double newMass) {
-        mass += newMass - stage->dryMass;
-        stage->dryMass = newMass;
-        stage->totalMass = stage->dryMass + stage->fuelMass + stage->engine.mass;
+    void setStageDryMass(Stage* stage, const double newMass) {
+        mpfr_sub(mass, mass, stage->dryMass, MPFR_RNDN);
+        mpfr_sub(stage->totalMass, stage->totalMass, stage->dryMass, MPFR_RNDN);
+
+        mpfr_add_d(mass, mass, newMass, MPFR_RNDN);
+        mpfr_add_d(stage->totalMass, stage->totalMass, newMass, MPFR_RNDN);
+
+        mpfr_set_d(stage->dryMass, newMass, MPFR_RNDN); // stage->dryMass = newMass;
         genDeltaV();
     }
 
@@ -160,10 +222,14 @@ public:
      * @param stage Pointer to the stage.
      * @param newMass The new fuel mass.
      */
-    void setStageFuelMass(Stage* stage, const long double newMass) {
-        mass += newMass - stage->fuelMass;
-        stage->fuelMass = newMass;
-        stage->totalMass = stage->dryMass + stage->fuelMass + stage->engine.mass;
+    void setStageFuelMass(Stage* stage, const double newMass) {
+        mpfr_sub(mass, mass, stage->fuelMass, MPFR_RNDN);
+        mpfr_sub(stage->totalMass, stage->totalMass, stage->fuelMass, MPFR_RNDN);
+
+        mpfr_add_d(mass, mass, newMass, MPFR_RNDN);
+        mpfr_add_d(stage->totalMass, stage->totalMass, newMass, MPFR_RNDN);
+
+        mpfr_set_d(stage->fuelMass, newMass, MPFR_RNDN); // stage->dryMass = newMass;
         genDeltaV();
     }
 
@@ -173,9 +239,13 @@ public:
      * @param newEngine The new engine.
      */
     void setStageEngine(Stage* stage, const Engine newEngine) {
-        mass += newEngine.mass - stage->engine.mass;
+        mpfr_sub(mass, mass, stage->engine.mass, MPFR_RNDN);
+        mpfr_add(mass, mass, newEngine.mass, MPFR_RNDN);
+
+        mpfr_sub(stage->totalMass, stage->totalMass, stage->engine.mass, MPFR_RNDN);
+        mpfr_add(stage->totalMass, stage->totalMass, newEngine.mass, MPFR_RNDN);
+
         stage->engine = newEngine;
-        stage->totalMass = stage->dryMass + stage->fuelMass + stage->engine.mass;
         genDeltaV();
     }
 
@@ -186,15 +256,31 @@ public:
      * @param engine The engine used in the stage.
      * @param index The index at which to insert the stage (optional).
      */
-    void addStage(const long double dryMass, const long double fuelMass, const Engine engine, const int index = -1) {
+    void addStage(const double dryMass, const double fuelMass, const Engine engine, const int index = -1) {
+
+        Stage* stage;
         if (index != -1) {
-            stages.insert(stages.begin() + index, {engine, 0, dryMass, fuelMass, dryMass + fuelMass + engine.mass});
+            stages.insert(stages.begin() + index, new Stage());
+            stage = stages[index];
         } else {
-            stages.push_back({engine, 0, dryMass, fuelMass, dryMass + fuelMass + engine.mass});
+            stages.push_back(new Stage());
+            stage = stages.back();
             //std::cerr << "Warning: index not specified for addStage, appending to end of stages\n";
         }
-        mass += dryMass + fuelMass + engine.mass;
+        mpfr_set_ld(stage->dryMass, dryMass, MPFR_RNDN);
+        mpfr_set_ld(stage->fuelMass, fuelMass, MPFR_RNDN);
+        mpfr_set(stage->engine.mass, engine.mass, MPFR_RNDN);
+        mpfr_set(stage->engine.exhaustVelocity, engine.exhaustVelocity, MPFR_RNDN);
+
+        mpfr_set(stage->totalMass, engine.mass, MPFR_RNDN);
+        mpfr_add_d(stage->totalMass, stage->totalMass, dryMass, MPFR_RNDN);
+
+        mpfr_add(mass, mass, stage->totalMass, MPFR_RNDN);
         genDeltaV();
+    }
+
+    long double toLongDouble(mpfr_t mpfr) {
+        return mpfr_get_ld(mpfr, MPFR_RNDN);
     }
 
     void printStats() {
@@ -203,54 +289,16 @@ public:
         uint i = 0;
         for (auto stagesiter = this->stages.begin(); stagesiter != this->stages.end(); stagesiter++) {
             printf("Stage %u:\n", i);
-            printf("\tTotal Stage Mass: %Lfkg\n", stagesiter->totalMass);
-            printf("\tTotal Mass for remaining stages: %Lfkg\n", this->getRemainingMass(&(*stagesiter)));
-            printf("\tDeltaV: %Lfm/s\n", stagesiter->deltaV);
-            printf("\tDryMass: %Lfkg\n", stagesiter->dryMass);
-            printf("\tFuelMass: %Lfkg\n", stagesiter->fuelMass);
-            printf("\tEngine %s:\n", stagesiter->engine.name);
-            printf("\t\tMass: %Lfkg\n", stagesiter->engine.mass);
-            printf("\t\tExhaustVelocity: %Lfm/s\n", stagesiter->engine.exhaustVelocity);
+            printf("\tTotal Stage Mass: %Lfkg\n", toLongDouble((*stagesiter)->totalMass));
+            //printf("\tTotal Mass for remaining stages: %Lfkg\n", this->getRemainingMass(&(*stagesiter)));
+            printf("\tDeltaV: %Lfm/s\n", toLongDouble((*stagesiter)->deltaV));
+            printf("\tDryMass: %Lfkg\n", toLongDouble((*stagesiter)->dryMass));
+            printf("\tFuelMass: %Lfkg\n", toLongDouble((*stagesiter)->fuelMass));
+            printf("\tEngine %s:\n", (*stagesiter)->engine.name);
+            printf("\t\tMass: %Lfkg\n", toLongDouble((*stagesiter)->engine.mass));
+            printf("\t\tExhaustVelocity: %Lfm/s\n", toLongDouble((*stagesiter)->engine.exhaustVelocity));
         }
     }
-
-protected:
-    std::vector<Stage> stages; /**< Vector of stages. */
-    long double mass;               /**< Total mass of the spaceship. */
-    long double deltaV;             /**< Total delta-V of the spaceship. */
-
-    /**
-     * @brief Generates the delta-V for the spaceship or a specific stage.
-     * @param inpStage Pointer to the input stage (optional).
-     *
-     * If inpStage is specified, it calculates the delta-V only for stages before the new stage.
-     * Otherwise, it calculates the delta-V for all stages.
-     */
-    void genDeltaV () {       // for addStage, this should implement only calcs on stages before new
-        mpfr_t result;
-        mpfr_init2(result, 256);
-
-        mpfr_t denominator;
-        mpfr_init2(denominator, 256);
-
-        long double remainingMass = mass;
-        deltaV = 0;
-        for (auto &stage: stages) {
-            mpfr_set_ld(result, remainingMass, MPFR_RNDN);
-            mpfr_set_ld(denominator, remainingMass - stage.fuelMass, MPFR_RNDN);
-
-            mpfr_div(result, result, denominator, MPFR_RNDN);
-            mpfr_log(result, result, MPFR_RNDN);
-            mpfr_mul_d(result, result, stage.engine.exhaustVelocity, MPFR_RNDN);
-
-            stage.deltaV = mpfr_get_ld(result, MPFR_RNDN);
-            deltaV += stage.deltaV;
-            remainingMass -= stage.totalMass;
-        }
-        mpfr_clear(result);
-        mpfr_clear(denominator);
-    }
-
 };
 
 
