@@ -352,14 +352,14 @@ public:
      * @param stage Pointer to the stage.
      * @param newEngine The new engine.
      */
-    void setStageEngine(Stage* stage, Engine* newEngine) {
+    void setStageEngine(Stage* stage, Engine newEngine) {
         mpfr_sub(mass, mass, stage->engine.mass, MPFR_RNDN);
-        mpfr_add(mass, mass, newEngine->mass, MPFR_RNDN);
-
         mpfr_sub(stage->totalMass, stage->totalMass, stage->engine.mass, MPFR_RNDN);
-        mpfr_add(stage->totalMass, stage->totalMass, newEngine->mass, MPFR_RNDN);
 
-        stage->engine = std::move(*newEngine);
+        mpfr_add(mass, mass, newEngine.mass, MPFR_RNDN);
+        mpfr_add(stage->totalMass, stage->totalMass, newEngine.mass, MPFR_RNDN);
+
+        stage->engine = std::move(newEngine);
         genDeltaV();
     }
 
@@ -388,8 +388,8 @@ public:
         mpfr_set_ld(stage->engine.mass, engineMass, MPFR_RNDN);
         mpfr_set_ld(stage->engine.exhaustVelocity, engineExhaustVelocity, MPFR_RNDN);
 
-        mpfr_set_ld(stage->totalMass, engineMass, MPFR_RNDN);
-        mpfr_add_d(stage->totalMass, stage->totalMass, dryMass, MPFR_RNDN);
+        mpfr_add(stage->totalMass, stage->dryMass, stage->fuelMass, MPFR_RNDN);
+        mpfr_add(stage->totalMass, stage->totalMass, stage->fuelMass, MPFR_RNDN);
 
         mpfr_add(mass, mass, stage->totalMass, MPFR_RNDN);
         genDeltaV();
@@ -411,8 +411,8 @@ public:
         mpfr_set_ld(stage->dryMass, dryMass, MPFR_RNDN);
         mpfr_set_ld(stage->fuelMass, fuelMass, MPFR_RNDN);
 
-        mpfr_set(stage->totalMass, stage->engine.mass, MPFR_RNDN);
-        mpfr_add_d(stage->totalMass, stage->totalMass, dryMass, MPFR_RNDN);
+        mpfr_add(stage->totalMass, stage->dryMass, stage->fuelMass, MPFR_RNDN);
+        mpfr_add(stage->totalMass, stage->totalMass, stage->engine.mass, MPFR_RNDN);
 
         mpfr_add(mass, mass, stage->totalMass, MPFR_RNDN);
         genDeltaV();
@@ -429,13 +429,17 @@ public:
         for (auto stagesiter = this->stages.begin(); stagesiter != this->stages.end(); stagesiter++) {
             printf("Stage %u:\n", i);
             printf("\tTotal Stage Mass: %Lfkg\n", toLongDouble((*stagesiter)->totalMass));
-            //printf("\tTotal Mass for remaining stages: %Lfkg\n", this->getRemainingMass(&(*stagesiter)));
+            mpfr_t temp;
+            mpfr_init(temp);
+            this->getRemainingMass(temp, (*stagesiter));
+            printf("\tTotal Mass for remaining stages: %Lfkg\n", toLongDouble(temp));
             printf("\tDeltaV: %Lfm/s\n", toLongDouble((*stagesiter)->deltaV));
             printf("\tDryMass: %Lfkg\n", toLongDouble((*stagesiter)->dryMass));
             printf("\tFuelMass: %Lfkg\n", toLongDouble((*stagesiter)->fuelMass));
             printf("\tEngine %s:\n", (*stagesiter)->engine.name);
             printf("\t\tMass: %Lfkg\n", toLongDouble((*stagesiter)->engine.mass));
             printf("\t\tExhaustVelocity: %Lfm/s\n", toLongDouble((*stagesiter)->engine.exhaustVelocity));
+            i++;
         }
     }
 };

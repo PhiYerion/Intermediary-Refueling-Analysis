@@ -58,7 +58,10 @@ TEST_CASE("SpaceShip") {
             Engine newEngine;
             mpfr_set_ld(newEngine.mass, valRange(gen), MPFR_RNDN);
             mpfr_set_ld(newEngine.exhaustVelocity, valRange(gen), MPFR_RNDN);
-            newEngine.name = ("S" + std::to_string(i)).c_str();
+
+            const char* name = ("S" + std::to_string(i)).c_str();
+            newEngine.name = new char[strlen(name) + 1];
+            std::strcpy(newEngine.name, name);
 
             stageList.push_back(new stage(valRange(gen), valRange(gen),
                                           mpfr_get_ld(newEngine.mass, MPFR_RNDN),mpfr_get_ld(newEngine.exhaustVelocity, MPFR_RNDN)));
@@ -90,9 +93,9 @@ TEST_CASE("SpaceShip") {
                 doubleTest(remainingMass, rollingMass, (char *) "Remaining Mass");
                 mpfr_clear(remainingMass);
 
-                /*printf("ln(%Lf/(%Lf - %Lf)) * %Lf | %Lf : %Lf \n", rollingMass, rollingMass, (*localStage)->fuelMass,
-                       (*localStage)->exhaustVelocity, (*stageIter)->deltaV,
-                        genDeltaV(rollingMass, (*localStage)->fuelMass, (*localStage)->exhaustVelocity));*/
+                printf("ln(%Lf/(%Lf - %Lf)) * %Lf | %Lf : %Lf \n", rollingMass, rollingMass, (*localStage)->fuelMass,
+                       (*localStage)->exhaustVelocity, mpfr_get_ld((*stageIter)->deltaV, MPFR_RNDN),
+                        genDeltaV(rollingMass, (*localStage)->fuelMass, (*localStage)->exhaustVelocity));
                 doubleTest((*stageIter)->deltaV,
                            genDeltaV(rollingMass, (*localStage)->fuelMass, (*localStage)->exhaustVelocity),
                            (char *) "Delta V");
@@ -102,7 +105,7 @@ TEST_CASE("SpaceShip") {
         };
 
         //SECTION ("No Changes to Stages") {
-            //fullTest((char *) "No Changes to Stages");
+        //    fullTest((char *) "No Changes to Stages");
         //}
 
         //SECTION("Changes to Stages") {
@@ -124,9 +127,13 @@ TEST_CASE("SpaceShip") {
                     Engine newEngine;
                     mpfr_set_ld(newEngine.mass, valRange(gen), MPFR_RNDN);
                     mpfr_set_ld(newEngine.exhaustVelocity, valRange(gen), MPFR_RNDN);
-                    newEngine.name = ("S" + std::to_string(i)).c_str();
-
+                    const char* name = ("S" + std::to_string(i)).c_str();
+                    newEngine.name = new char[strlen(name) + 1];
+                    std::strcpy(newEngine.name, name);
                     ship->setStageEngine(*stageIter, newEngine);
+
+                    (*localStage)->engineMass = mpfr_get_ld(newEngine.mass, MPFR_RNDN);
+                    (*localStage)->exhaustVelocity = mpfr_get_ld(newEngine.exhaustVelocity, MPFR_RNDN);
 
                 }
 
@@ -138,7 +145,7 @@ TEST_CASE("SpaceShip") {
                 delete (stage);
             }
             delete (ship);
-        }
+        //}
     mpfr_free_cache();
     }
-//}
+}
