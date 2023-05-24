@@ -80,10 +80,10 @@ protected:
         mpfr_t remainingMass;
         mpfr_init2(remainingMass, PRECISION);
         mpfr_set(remainingMass, mass, MPFR_RNDN);
-        mpfr_set_d(deltaV, 0, MPFR_RNDN);
+        mpfr_set_zero(deltaV, 0);
         for (auto &stage: stages) {
             mpfr_set(stage->deltaV, remainingMass, MPFR_RNDN);
-            mpfr_sub(denominator, denominator, stage->fuelMass, MPFR_RNDN);
+            mpfr_sub(denominator, remainingMass, stage->fuelMass, MPFR_RNDN);
             mpfr_div(stage->deltaV, stage->deltaV, denominator, MPFR_RNDN);
             mpfr_log(stage->deltaV, stage->deltaV, MPFR_RNDN);
             mpfr_mul(stage->deltaV, stage->deltaV, stage->engine.exhaustVelocity, MPFR_RNDN);
@@ -100,6 +100,8 @@ public:
         mpfr_set_default_prec(PRECISION);
         mpfr_init(mass);
         mpfr_init(deltaV);
+        mpfr_set_zero(mass, 0);
+        mpfr_set_zero(deltaV, 0);
     }
             
     ~SpaceShip() {
@@ -267,6 +269,8 @@ public:
             stage = stages.back();
             //std::cerr << "Warning: index not specified for addStage, appending to end of stages\n";
         }
+        stage->engine.name = engine.name;
+
         mpfr_set_ld(stage->dryMass, dryMass, MPFR_RNDN);
         mpfr_set_ld(stage->fuelMass, fuelMass, MPFR_RNDN);
         mpfr_set(stage->engine.mass, engine.mass, MPFR_RNDN);
