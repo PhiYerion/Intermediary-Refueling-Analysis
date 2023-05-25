@@ -1,6 +1,6 @@
-FROM debian:latest
+FROM archlinux:latest
 
-RUN apt update; apt install -y git cmake g++ libmpfr-dev
+RUN pacman -Sy --noconfirm git base base-devel cmake mpfr
 
 RUN git clone https://github.com/PhiYerion/Intermediary-Refueling-Analysis.git && \
     cd Intermediary-Refueling-Analysis/ && \
@@ -13,4 +13,4 @@ RUN git clone https://github.com/PhiYerion/Intermediary-Refueling-Analysis.git &
     mv ira /bin && \
     mv tests /bin
 
-CMD ["./ira", "./tests"]
+#CMD ["/Intermediary-Refueling-Analysis/build/ira", "/Intermediary-Refueling-Analysis/build/tests"]

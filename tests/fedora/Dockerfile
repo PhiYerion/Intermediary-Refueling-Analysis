@@ -9,6 +9,8 @@ RUN git clone https://github.com/PhiYerion/Intermediary-Refueling-Analysis.git &
     mkdir build && \
     cd build && \
     cmake .. && \
-    cmake --build .
+    cmake --build . && \
+    mv ira /bin && \
+    mv tests /bin
 
 CMD ["/Intermediary-Refueling-Analysis/build/ira", "/Intermediary-Refueling-Analysis/build/tests"]
