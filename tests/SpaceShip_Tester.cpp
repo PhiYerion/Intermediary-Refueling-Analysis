@@ -4,7 +4,7 @@
 #include "catch2/matchers/catch_matchers_floating_point.hpp"
 #include "../SpaceShip.h"
 #include <cstdio>
-#include "../lib/mpfr.h"
+#include <mpfr.h>
 
 void doubleTest(mpfr_t mpfrA, long double b, char* name) {
     long double a = mpfr_get_ld(mpfrA, MPFR_RNDN);

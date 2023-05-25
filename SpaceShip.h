@@ -7,7 +7,7 @@
 #include <cmath>
 #include <iostream>
 #include <cstdio>
-#include "lib/mpfr.h"
+#include <mpfr.h>
 #include "cstring"
 #define PRECISION 1024
 /**
