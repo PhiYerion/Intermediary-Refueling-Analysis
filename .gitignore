@@ -3,3 +3,4 @@ a.out
 venv/
 build/
 .idea/
+cmake-build-debug-coverage
