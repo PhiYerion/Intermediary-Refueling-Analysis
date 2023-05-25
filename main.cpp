@@ -1,10 +1,23 @@
 #include <vector>
 #include <iostream>
 #include <random>
-#include "SpaceShip.h"
+#include "SpaceShipHandler.h"
 
 int main () {
-    {
+    SpaceShipHandler handler;
+    auto ship1 = handler.addShip();
+    auto ship2 = handler.addShip();
+    handler.addStage(ship1, 0, 100, 100, handler.createEngine(100, 1000, "test"));
+    handler.addStage(ship1, 1, 50, 20, handler.createEngine(100, 1000, "test2"));
+    handler.addStage(ship2, 0, 100, 100, handler.createEngine(100, 1000, "test3"));
+    handler.addStage(ship2, 1, 50, 20, handler.createEngine(100, 1000, "test4"));
+    handler.addStage(ship2, 2, 50, 20, handler.createEngine(100, 1000, "test5"));
+
+    std::cout << "Ship 1: " << std::endl;
+    handler.printStats(ship1);
+    std::cout << "Ship 2: " << std::endl;
+    handler.printStats(ship2);
+    /*{
         auto *ship = new SpaceShip();
         Engine newEngine = Engine();
         mpfr_set_ld(newEngine.mass, 100, MPFR_RNDN);
@@ -40,7 +53,7 @@ int main () {
         ship->addStage(valRange(gen), valRange(gen), newEngine);
     }
     ship->printStats();
-    delete(ship);
+    delete(ship);*/
 
     return 1;
 }

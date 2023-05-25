@@ -3,7 +3,7 @@ project(IRA)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(ira main.cpp)
+add_executable(ira main.cpp SpaceShip.cpp Engine.cpp Stage.cpp)
 
 add_subdirectory(lib/Catch2)
 add_executable(tests tests/SpaceShip_Tester.cpp)
