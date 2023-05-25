@@ -5,7 +5,8 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_executable(ira main.cpp)
 
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -L ./lib -lmpfr -lgmp -g -O0")
+set(ENV{LD_LIBRARY_PATH} "lib:$ENV{LD_LIBRARY_PATH}")
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -L lib -lmpfr -lgmp -g -O0")
 
 add_subdirectory(lib/Catch2)
 add_executable(tests tests/SpaceShip_Tester.cpp)
