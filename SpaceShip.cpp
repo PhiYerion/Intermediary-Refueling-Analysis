@@ -26,7 +26,6 @@ SpaceShip::~SpaceShip() {
     for (auto & stage : stages) {
         delete(stage);
     }
-    mpfr_free_cache();
 }
 
 void SpaceShip::genDeltaV () {       // for addStage, this should implement only calcs on stages before new

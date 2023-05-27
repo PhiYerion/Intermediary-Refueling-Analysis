@@ -48,6 +48,7 @@ public:
         for (auto &enginePair : engineList) {
             delete enginePair.second;
         }
+        mpfr_free_cache();
     }
 
     // ========== CREATORS ==========
@@ -58,7 +59,7 @@ public:
     }
 
     void createEngine(std::string name, const long double mass, const long double exhaustVelocity) {
-        auto* newEngine = new Engine();
+        auto newEngine = new Engine();
 
         mpfr_set_ld(newEngine->mass, mass, MPFR_RNDN);
         mpfr_set_ld(newEngine->exhaustVelocity, exhaustVelocity, MPFR_RNDN);
