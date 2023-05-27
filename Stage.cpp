@@ -21,6 +21,7 @@ Stage::~Stage() {
     mpfr_clear(dryMass);
     mpfr_clear(fuelMass);
     mpfr_clear(totalMass);
+    delete engine;
 }
 
 // Copy operations:
@@ -32,7 +33,7 @@ Stage& Stage::operator=(const Stage& other) {
     mpfr_set(dryMass, other.dryMass, MPFR_RNDN);                        // are copied instead of just the pointers
     mpfr_set(fuelMass, other.fuelMass, MPFR_RNDN);
     mpfr_set(totalMass, other.totalMass, MPFR_RNDN);
-    engine = other.engine;                                              // This is a copy operation
+    *engine = *other.engine;                                              // This is a copy operation
 
     return *this;
 }
@@ -46,7 +47,7 @@ Stage::Stage(const Stage& other) {
     mpfr_set(fuelMass, other.fuelMass, MPFR_RNDN);
     mpfr_set(totalMass, other.totalMass, MPFR_RNDN);
 
-    engine = other.engine;                                              // This is a copy operation
+    *engine = *other.engine;                                              // This is a copy operation
 }
 
 // Move operations:
@@ -59,7 +60,7 @@ Stage& Stage::operator=(Stage&& other)  noexcept {
     dryMass[0] = other.dryMass[0];                                      // of the original object.
     fuelMass[0] = other.fuelMass[0];
     totalMass[0] = other.totalMass[0];
-    engine = std::move(other.engine);
+    engine = other.engine;
 
     return *this;
 }
@@ -68,7 +69,7 @@ Stage::Stage(Stage&& other) noexcept {
     dryMass[0] = other.dryMass[0];
     fuelMass[0] = other.fuelMass[0];
     totalMass[0] = other.totalMass[0];
-    engine = std::move(other.engine);
+    engine = other.engine;
 }
 
 /* Consider removing    // Getters:

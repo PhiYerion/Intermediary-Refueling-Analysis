@@ -59,6 +59,7 @@ public:
      */
 
     void addStage(mpfr_t dryMass, mpfr_t fuelMass, Engine engine, const int index = -1);
+    void addStage(mpfr_t dryMass, mpfr_t fuelMass, Engine* engine, const int index = -1);
 
     /**
      * @brief Sets the dry mass of a stage.
@@ -76,6 +77,8 @@ public:
 
     //void setStageEngine(Stage *stage, Engine newEngine);
     void setStageEngine(Stage* stage, Engine newEngine);
+    void setStageEngine(Stage* stage, Engine* newEngine);
+
 };
 
 #endif //SRC_SPACESHIP_H

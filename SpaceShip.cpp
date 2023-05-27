@@ -25,7 +25,7 @@ void SpaceShip::genDeltaV () {       // for addStage, this should implement only
         mpfr_sub(denominator, remainingMass, stage->fuelMass, MPFR_RNDN);
         mpfr_div(stage->deltaV, stage->deltaV, denominator, MPFR_RNDN);
         mpfr_log(stage->deltaV, stage->deltaV, MPFR_RNDN);
-        mpfr_mul(stage->deltaV, stage->deltaV, stage->engine.exhaustVelocity, MPFR_RNDN);
+        mpfr_mul(stage->deltaV, stage->deltaV, stage->engine->exhaustVelocity, MPFR_RNDN);
 
         mpfr_add(deltaV, deltaV, stage->deltaV, MPFR_RNDN);
         mpfr_sub(remainingMass, remainingMass, stage->totalMass, MPFR_RNDN);
@@ -87,15 +87,27 @@ void SpaceShip::getRemainingMass (mpfr_t result, const Stage* inputStage) {
  * @param newEngine The new engine.
  */
 void SpaceShip::setStageEngine(Stage* stage, Engine newEngine) {
-    mpfr_sub(mass, mass, stage->engine.mass, MPFR_RNDN);
-    mpfr_sub(stage->totalMass, stage->totalMass, stage->engine.mass, MPFR_RNDN);
+    mpfr_sub(mass, mass, stage->engine->mass, MPFR_RNDN);
+    mpfr_sub(stage->totalMass, stage->totalMass, stage->engine->mass, MPFR_RNDN);
 
     mpfr_add(mass, mass, newEngine.mass, MPFR_RNDN);
     mpfr_add(stage->totalMass, stage->totalMass, newEngine.mass, MPFR_RNDN);
 
-    stage->engine = std::move(newEngine);
+    *stage->engine = std::move(newEngine);
     genDeltaV();
 }
+
+void SpaceShip::setStageEngine(Stage* stage, Engine* newEngine) {
+    mpfr_sub(mass, mass, stage->engine->mass, MPFR_RNDN);
+    mpfr_sub(stage->totalMass, stage->totalMass, stage->engine->mass, MPFR_RNDN);
+
+    mpfr_add(mass, mass, newEngine->mass, MPFR_RNDN);
+    mpfr_add(stage->totalMass, stage->totalMass, newEngine->mass, MPFR_RNDN);
+
+    stage->engine = newEngine;
+    genDeltaV();
+}
+
 
 /**
  * @brief Adds a stage to the spaceship.
@@ -116,13 +128,37 @@ void SpaceShip::addStage(mpfr_t dryMass, mpfr_t fuelMass, Engine engine, const i
         stage = stages.back();
         //std::cerr << "Warning: index not specified for addStage, appending to end of stages\n";
     }
-    stage->engine = std::move(engine);
+    *stage->engine = std::move(engine);
 
     mpfr_set(stage->dryMass, dryMass, MPFR_RNDN);
     mpfr_set(stage->fuelMass, fuelMass, MPFR_RNDN);
 
     mpfr_add(stage->totalMass, stage->dryMass, stage->fuelMass, MPFR_RNDN);
-    mpfr_add(stage->totalMass, stage->totalMass, stage->engine.mass, MPFR_RNDN);
+    mpfr_add(stage->totalMass, stage->totalMass, stage->engine->mass, MPFR_RNDN);
+
+    mpfr_add(mass, mass, stage->totalMass, MPFR_RNDN);
+    genDeltaV();
+}
+
+
+void SpaceShip::addStage(mpfr_t dryMass, mpfr_t fuelMass, Engine* engine, const int index) {
+
+    Stage* stage;
+    if (index != -1) {
+        stages.insert(stages.begin() + index, new Stage());
+        stage = stages[index];
+    } else {
+        stages.push_back(new Stage());
+        stage = stages.back();
+        //std::cerr << "Warning: index not specified for addStage, appending to end of stages\n";
+    }
+    stage->engine = engine;
+
+    mpfr_set(stage->dryMass, dryMass, MPFR_RNDN);
+    mpfr_set(stage->fuelMass, fuelMass, MPFR_RNDN);
+
+    mpfr_add(stage->totalMass, stage->dryMass, stage->fuelMass, MPFR_RNDN);
+    mpfr_add(stage->totalMass, stage->totalMass, stage->engine->mass, MPFR_RNDN);
 
     mpfr_add(mass, mass, stage->totalMass, MPFR_RNDN);
     genDeltaV();

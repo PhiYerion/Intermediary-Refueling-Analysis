@@ -14,7 +14,7 @@
  */
 class Stage {
 public:
-    Engine engine;                /**< Engine used in the stage. */
+    Engine* engine;                /**< Engine used in the stage. */
     mpfr_t deltaV,                /**< Delta-V of the stage. */
     dryMass,                      /**< Dry mass of the stage (excluding engine mass). */
     fuelMass,                     /**< Fuel mass of the stage. */
