@@ -2,12 +2,8 @@
 // Created by user on 5/25/23.
 //
 
-#include "SpaceShip.h"
 #include "Engine.h"
-#include <cstring>
-#include <cstdio>
 #include <mpfr.h>
-#include <cmath>
 
 Engine::Engine() {
     mpfr_init(mass);
@@ -15,11 +11,10 @@ Engine::Engine() {
 }
 
 Engine::~Engine() {
-    if (mass[0]._mpfr_d != nullptr) {                                    // Errors pretaining to erroneous clearing
-        free(name);                                                 // should be resolved, so the lack of hard
-        mpfr_clear(mass);                                                // errors when nullptr is encountered is
-        mpfr_clear(exhaustVelocity);                                     // acceptable and needed due to nullptrs
-    }                                                                    // in the case that there is a move operation
+    if (mass[0]._mpfr_d != nullptr) {                          // Errors pretaining to erroneous clearing should be
+        mpfr_clear(mass);                                      // resolved, so the lack of hard errors when nullptr is
+        mpfr_clear(exhaustVelocity);                           // encountered is acceptable and needed due to nullptrs
+    }                                                          // in the case that there is a move operation
 }
 
 // Copy operations:
@@ -29,8 +24,7 @@ Engine::Engine(const Engine& other) {
     mpfr_set(mass, other.mass, MPFR_RNDN);
     mpfr_set(exhaustVelocity, other.exhaustVelocity, MPFR_RNDN);
 
-    name = new char[strlen(other.name) + 1];
-    strcpy(name, other.name);
+    name = other.name;
 }
 Engine& Engine::operator=(const Engine& other) {
     if (this == &other) {
@@ -39,8 +33,7 @@ Engine& Engine::operator=(const Engine& other) {
     mpfr_set(mass, other.mass, MPFR_RNDN);
     mpfr_set(exhaustVelocity, other.exhaustVelocity, MPFR_RNDN);
 
-    name = new char[strlen(other.name) + 1];
-    strcpy(name, other.name);
+    name = other.name;
 
     return *this;
 }
@@ -53,8 +46,7 @@ Engine::Engine(Engine&& other) noexcept {
     exhaustVelocity[0] = other.exhaustVelocity[0];
     other.exhaustVelocity[0]._mpfr_d = nullptr;
 
-    name = other.name;
-    other.name = nullptr;
+    name = std::move(other.name);
 }
 
 Engine& Engine::operator=(Engine&& other)  noexcept {
@@ -68,8 +60,7 @@ Engine& Engine::operator=(Engine&& other)  noexcept {
     exhaustVelocity[0] = other.exhaustVelocity[0];
     other.exhaustVelocity[0]._mpfr_d = nullptr;
 
-    name = other.name;
-    other.name = nullptr;
+    name = std::move(other.name);
 
     return *this;
 }

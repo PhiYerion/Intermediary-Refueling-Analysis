@@ -58,8 +58,7 @@ public:
      * @param index The index at which to insert the stage (optional).
      */
 
-    void addStage(mpfr_t dryMass, mpfr_t fuelMass, Engine engine, const int index = -1);
-    void addStage(mpfr_t dryMass, mpfr_t fuelMass, Engine* engine, const int index = -1);
+    void addStage(mpfr_t dryMass, mpfr_t fuelMass, const Engine* engine, const int index = -1);
 
     /**
      * @brief Sets the dry mass of a stage.
@@ -75,8 +74,6 @@ public:
      */
     void setStageFuelMass(Stage* stage, const mpfr_t newMass);
 
-    //void setStageEngine(Stage *stage, Engine newEngine);
-    void setStageEngine(Stage* stage, Engine newEngine);
     void setStageEngine(Stage* stage, Engine* newEngine);
 
 };

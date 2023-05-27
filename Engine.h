@@ -7,12 +7,13 @@
 
 #include <vector>
 #include <mpfr.h>
+#include <string>
 
 class Engine {
 public:
     mpfr_t mass,                                /**< Mass of the engine. */
     exhaustVelocity;                            /**< Exhaust velocity of the engine. */
-    char* name;                                 /**< Name of the engine. */
+    std::string name;                           /**< Name of the engine. */
 
     Engine();
     ~Engine();
