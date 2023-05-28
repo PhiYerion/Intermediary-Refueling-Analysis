@@ -76,6 +76,9 @@ TEST_CASE("SpaceShip") {
             printf("--------------------# %s --------------------\n", name);
             for (uint i = stageList.size() - 1; i != 0; i--) {
                 printf("--------------------## stage %d--------------------\n", i);
+                printf("Verified: rM: %Lf, f: %Lf, e.m: %Lf, e.eV: %Lf, dM: %Lf\n",
+                       rollingMass, (*localStage)->fuelMass, (*localStage)->engineMass,
+                       (*localStage)->exhaustVelocity, mpfr_get_ld((*stageIter)->dryMass, MPFR_RNDN));
                 doubleTest((*stageIter)->dryMass, (*localStage)->dryMass, (char *) "Dry Mass");
                 doubleTest((*stageIter)->fuelMass, (*localStage)->fuelMass, (char *) "Fuel Mass");
                 doubleTest((*stageIter)->engine.mass, (*localStage)->engineMass, (char *) "Engine Mass");
@@ -93,7 +96,6 @@ TEST_CASE("SpaceShip") {
                 doubleTest(remainingMass, rollingMass, (char *) "Remaining Mass");
                 mpfr_clear(remainingMass);
 
-                printf("ln(%Lf/(%Lf - %Lf)) * %Lf | %Lf : %Lf \n", rollingMass, rollingMass, (*localStage)->fuelMass,
                        (*localStage)->exhaustVelocity, mpfr_get_ld((*stageIter)->deltaV, MPFR_RNDN),
                         genDeltaV(rollingMass, (*localStage)->fuelMass, (*localStage)->exhaustVelocity));
                 doubleTest((*stageIter)->deltaV,

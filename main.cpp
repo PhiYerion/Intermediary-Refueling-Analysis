@@ -1,46 +1,31 @@
 #include <vector>
 #include <iostream>
 #include <random>
-#include "SpaceShip.h"
+#include "SpaceShipHandler.h"
 
 int main () {
-    {
-        auto *ship = new SpaceShip();
-        Engine newEngine = Engine();
-        mpfr_set_ld(newEngine.mass, 100, MPFR_RNDN);
-        mpfr_set_ld(newEngine.exhaustVelocity, 1000, MPFR_RNDN);
-        const char *name = "test";
-        newEngine.name = new char[strlen(name) + 1];
-        std::strcpy(newEngine.name, name);
-
-        ship->addStage(100, 1, newEngine);
-        ship->addStage(50, 20, newEngine);
-        Engine newEngine2 = std::move(Engine());
-        ship->printStats();
-        delete (ship);
-    }
-
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<long double> valRange(1, 1'000'000'000.0);
-    std::uniform_int_distribution<uint> stageRange(10, 30);
+    std::uniform_int_distribution<uint> magnitude(2, 10);
+    std::uniform_real_distribution<long double> valRange(0.001, 10);
 
+    auto rnd = [&valRange, &gen, &magnitude]() {return valRange(gen) * pow(10, magnitude(gen));};
 
-    auto *ship = new SpaceShip();
-    const uint stageCount = 10;
-    for (uint i = 0; i < stageCount; i++) {
-        Engine newEngine;
-        mpfr_set_ld(newEngine.mass, valRange(gen), MPFR_RNDN);
-        mpfr_set_ld(newEngine.exhaustVelocity, valRange(gen), MPFR_RNDN);
-
-        const char* name = ("S" + std::to_string(i)).c_str();
-        newEngine.name = new char[strlen(name) + 1];
-        std::strcpy(newEngine.name, name);
-
-        ship->addStage(valRange(gen), valRange(gen), newEngine);
+    SpaceShipHandler handler(1024);
+    std::vector<SpaceShipWrapper*> ships;
+    ships.reserve(3);
+    for (int i = 0; i < 3; i++) {
+        auto ship = handler.addShip();
+        for (int j = 0; j < 5; j++) {
+            auto engineName = "S" + std::to_string(i) + "." + std::to_string(j);
+            handler.createEngine(engineName, rnd(), rnd());
+            ship->addStage(rnd(), rnd(), handler.getEngine(engineName));
+            ship->printStats();
+        }
     }
-    ship->printStats();
-    delete(ship);
+   /* for (const auto& ship : *handler.getShipList()) {
+        ship->printStats();
+    }*/
 
     return 1;
 }
