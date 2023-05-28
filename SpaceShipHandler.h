@@ -49,6 +49,7 @@ public:
             delete enginePair.second;
         }
         mpfr_free_cache();
+
     }
 
     // ========== CREATORS ==========
@@ -58,16 +59,22 @@ public:
         return newShip;
     }
 
-    void createEngine(std::string name, const long double mass, const long double exhaustVelocity) {
+    int createEngine(std::string name, const long double mass, const long double exhaustVelocity) {
+        // There cannot be conflicts for multiple reasons. One, it makes it impossible to find the engine. Two,
+        // It generates a memory leak. Three, it should prompt the user on the fact that it already exists.
+        if (engineList.find(name) != engineList.end()) {
+            std::cerr << "[SpaceShipHandler::createEngine] Engine " << name << " already exists." << std::endl;
+            return 1;
+        }
+
         auto newEngine = new Engine();
 
         mpfr_set_ld(newEngine->mass, mass, MPFR_RNDN);
         mpfr_set_ld(newEngine->exhaustVelocity, exhaustVelocity, MPFR_RNDN);
 
-        // Accessing the element should be faster than having to copy over a string. More preferable would be to
-        // get the pointer and then use that for both, and it is unknown if compiler will do this automatically.
+        newEngine->name = name;
         engineList.insert({name, newEngine});
-        engineList.at(name)->name = std::move(name);
+        return 0;
     }
 
     // ========== SETTERS ==========
@@ -75,14 +82,14 @@ public:
      * @brief Sets the mass of the ship.
      * @param mass To-be mass.
      * @param ship Pointer to the ship.
-     * @return 0 if successful, -1 if not.
+     * @return 0 if successful, 1 if not.
      */
     int setEngineDryMass(const long double mass, const std::string& name) {
         try {
             mpfr_set_ld(engineList.at(name)->mass, mass, MPFR_RNDN);
         } catch (const std::out_of_range& e) {
             std::cerr << "[SpaceShipHandler::setEngineDryMass] Engine " << name << " does not exist." << std::endl;
-            return -1;
+            return 1;
         }
         return 0;
     }
@@ -91,14 +98,14 @@ public:
      * @brief Sets the engine exhaust velocity.
      * @param exhaustVelocity To-be exhaust velocity.
      * @param name Name of the engine.
-     * @return 0 if successful, -1 if not.
+     * @return 0 if successful, 1 if not.
      */
     int setEngineExhaustVelocity(const long double exhaustVelocity, const std::string& name) {
         try {
             mpfr_set_ld(engineList.at(name)->exhaustVelocity, exhaustVelocity, MPFR_RNDN);
         } catch (const std::out_of_range& e) {
             std::cerr << "[SpaceShipHandler::setEngineExhaustVelocity] Engine " << name << " does not exist." << std::endl;
-            return -1;
+            return 1;
         }
         return 0;
     }

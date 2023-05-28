@@ -13,11 +13,12 @@ int main () {
     ships.reserve(3);
     for (int i = 0; i < 3; i++) {
         auto ship = handler.addShip();
-        handler.createEngine("S1fds", valRange(gen), valRange(gen));
-        handler.createEngine("S2fds", valRange(gen), valRange(gen));
-        ship->addStage(valRange(gen), valRange(gen), handler.getEngine("S1fds"));
-        ship->addStage(valRange(gen), valRange(gen), handler.getEngine("S2fds"));
-        ship->printStats();
+        for (int j = 0; j < 5; j++) {
+            auto engineName = "S" + std::to_string(i) + "." + std::to_string(j);
+            handler.createEngine(engineName, valRange(gen), valRange(gen));
+            ship->addStage(valRange(gen), valRange(gen), handler.getEngine(engineName));
+            ship->printStats();
+        }
     }
    /* for (const auto& ship : *handler.getShipList()) {
         ship->printStats();
