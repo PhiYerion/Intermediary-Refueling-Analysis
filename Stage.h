@@ -2,10 +2,11 @@
 // Created by user on 5/25/23.
 //
 
+#include "Engine.h"
+
 #ifndef IRA_STAGE_H
 #define IRA_STAGE_H
 
-#include "Engine.h"
 
 /**
  * @brief Represents a stage of a spaceship.

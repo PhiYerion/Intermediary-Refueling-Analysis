@@ -2,9 +2,6 @@
 // Created by user on 5/24/23.
 //
 
-#ifndef IRA_SPACESHIPHANDLER_H
-#define IRA_SPACESHIPHANDLER_H
-
 #include "SpaceShip.h"
 #include "Stage.h"
 #include "Engine.h"
@@ -13,7 +10,11 @@
 #include <cmath>
 #include <cstring>
 #include <unordered_map>
+#include "iostream"
 #include "SpaceShipWrapper.h"
+
+#ifndef IRA_SPACESHIPHANDLER_H
+#define IRA_SPACESHIPHANDLER_H
 
 /**
  * @brief A largely stable class that abstracts SpaceShip class

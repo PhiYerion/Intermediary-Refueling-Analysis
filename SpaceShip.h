@@ -1,11 +1,11 @@
 
-#ifndef SRC_SPACESHIP_H
-#define SRC_SPACESHIP_H
-
 #include <mpfr.h>
 #include <vector>
 #include "Stage.h"
 #include "Engine.h"
+
+#ifndef SRC_SPACESHIP_H
+#define SRC_SPACESHIP_H
 
 /**
  * @brief Spaceship class with full functionality.
