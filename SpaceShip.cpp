@@ -2,7 +2,6 @@
 #include "Stage.h"
 #include <mpfr.h>
 
-#define PRECISION 1024
 
 /**
  * @brief Generates the delta-V for the spaceship or a specific stage.
@@ -13,7 +12,6 @@
  */
 
 SpaceShip::SpaceShip() {
-    mpfr_set_default_prec(PRECISION);
     mpfr_init(mass);
     mpfr_init(deltaV);
     mpfr_set_zero(mass, 0);
@@ -31,10 +29,9 @@ SpaceShip::~SpaceShip() {
 void SpaceShip::genDeltaV () {       // for addStage, this should implement only calcs on stages before new
 
     mpfr_t denominator;
-    mpfr_init2(denominator, PRECISION);
-
+    mpfr_init(denominator);
     mpfr_t remainingMass;
-    mpfr_init2(remainingMass, PRECISION);
+    mpfr_init(remainingMass);
     mpfr_set(remainingMass, mass, MPFR_RNDN);
     mpfr_set_zero(deltaV, 0);
     for (auto &stage: stages) {
