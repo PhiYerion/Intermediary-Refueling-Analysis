@@ -2,13 +2,13 @@
 // Created by user on 5/27/23.
 //
 
-#ifndef IRA_SPACESHIPWRAPPER_H
-#define IRA_SPACESHIPWRAPPER_H
-
 #include <cmath>
 #include <cstdio>
 #include <mpfr.h>
 #include "SpaceShip.h"
+
+#ifndef IRA_SPACESHIPWRAPPER_H
+#define IRA_SPACESHIPWRAPPER_H
 
 class SpaceShipWrapper : SpaceShip {
 public:
@@ -124,6 +124,10 @@ public:
         return mpfr_get_ld(deltaV, MPFR_RNDN);
     }
 
+    const std::vector<Stage*>* getStages() {
+        return &stages;
+    }
+
 
     // ========== SETTERS ==========
     //   This is unoptimized from version before SpaceShipHandler merge, but abstraction
@@ -134,10 +138,10 @@ public:
     * @param stage Pointer to the stage.
     * @param newMass The new dry mass.
     */
-    void setStageDryMass(uint stageIdx, const double newMass) {
+    void setStageDryMass(uint stageIdx, const long double newMass) {
         mpfr_t newMass_mpfr;
         mpfr_init(newMass_mpfr);
-        mpfr_set_d(newMass_mpfr, newMass, MPFR_RNDN);
+        mpfr_set_ld(newMass_mpfr, newMass, MPFR_RNDN);
         SpaceShip::setStageDryMass(stages[stageIdx], newMass_mpfr);
         mpfr_clear(newMass_mpfr);
     }
@@ -147,33 +151,46 @@ public:
      * @param stage Pointer to the stage.
      * @param newMass The new fuel mass.
      */
-    void setStageFuelMass(uint stageIdx, const double newMass) {
+    void setStageFuelMass(uint stageIdx, const long double newMass) {
         mpfr_t newMassMPFR;
         mpfr_init(newMassMPFR);
         mpfr_set_d(newMassMPFR, newMass, MPFR_RNDN);
-        SpaceShip::setStageDryMass(stages[stageIdx], newMassMPFR);
+        SpaceShip::setStageFuelMass(stages[stageIdx], newMassMPFR);
         mpfr_clear(newMassMPFR);
     }
 
+    void setStageEngine(uint stageIdx, const Engine* newEngine) {
+        SpaceShip::setStageEngine(stages[stageIdx], newEngine);
+    }
+
+    // ===== MPFR GETTERS =====
+    void getRawDeltaV(mpfr_t result) {
+        mpfr_init(result);
+        mpfr_set(result, deltaV, MPFR_RNDN);
+    }
+
+    void getRawMass(mpfr_t result) {
+        mpfr_init(result);
+        mpfr_set(result, mass, MPFR_RNDN);
+    }
+
+    // ========== MISC ==========
     void printStats() {
-        printf("DeltaV: %Lfm/s\n", getDeltaV());
-        printf("Mass: %Lfkg\n", getMass());
+        printf("DeltaV: %.32Lf m/s\n", getDeltaV());
+        printf("Mass: %.32Lf kg\n", getMass());
         for (uint i = 0; i < stages.size(); i++) {
             printf("Stage %u:\n", i);
-            printf("\tRemaining Mass: %Lfkg\n", getRemainingMass(i));
-            printf("\tTotal Stage Mass: %Lfkg\n", getStageTotalMass(i));
-            printf("\tDeltaV: %Lfm/s\n", getStageDeltaV(i));
-            printf("\tDryMass: %Lfkg\n", getStageDryMass(i));
-            printf("\tFuelMass: %Lfkg\n", getStageFuelMass(i));
+            printf("\tRemaining Mass: %.32Lf kg\n", getRemainingMass(i));
+            printf("\tTotal Stage Mass: %.32Lf kg\n", getStageTotalMass(i));
+            printf("\tDeltaV: %.32Lf m/s\n", getStageDeltaV(i));
+            printf("\tDryMass: %.32Lf kg\n", getStageDryMass(i));
+            printf("\tFuelMass: %.32Lf kg\n", getStageFuelMass(i));
             printf("\tEngine %s:\n", stages[i]->engine->name.c_str());
-            printf("\t\tMass: %Lfkg\n", getStageEngineMass(i));
-            printf("\t\tExhaust Velocity: %Lfm/s\n", getStageExhaustVelocity(i));
+            printf("\t\tMass: %.32Lf kg\n", getStageEngineMass(i));
+            printf("\t\tExhaust Velocity: %.32Lf m/s\n", getStageExhaustVelocity(i));
         }
     }
 
-    void setEngine(uint stageIdx, Engine newEngine) {
-        SpaceShip::setStageEngine((*getStages())[stageIdx], &newEngine);
-    }
 };
 
 

@@ -1,11 +1,12 @@
 
-#ifndef SRC_SPACESHIP_H
-#define SRC_SPACESHIP_H
-
+#include "cstdio"
 #include <mpfr.h>
 #include <vector>
 #include "Stage.h"
 #include "Engine.h"
+
+#ifndef SRC_SPACESHIP_H
+#define SRC_SPACESHIP_H
 
 /**
  * @brief Spaceship class with full functionality.
@@ -74,7 +75,7 @@ public:
      */
     void setStageFuelMass(Stage* stage, const mpfr_t newMass);
 
-    void setStageEngine(Stage* stage, Engine* newEngine);
+    void setStageEngine(Stage* stage, const Engine* newEngine);
 
 };
 

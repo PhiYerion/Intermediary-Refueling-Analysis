@@ -1,8 +1,8 @@
 #include "SpaceShip.h"
 #include "Stage.h"
+#include "cstdio"
 #include <mpfr.h>
 
-#define PRECISION 1024
 
 /**
  * @brief Generates the delta-V for the spaceship or a specific stage.
@@ -13,7 +13,6 @@
  */
 
 SpaceShip::SpaceShip() {
-    mpfr_set_default_prec(PRECISION);
     mpfr_init(mass);
     mpfr_init(deltaV);
     mpfr_set_zero(mass, 0);
@@ -30,22 +29,20 @@ SpaceShip::~SpaceShip() {
 
 void SpaceShip::genDeltaV () {       // for addStage, this should implement only calcs on stages before new
 
-    mpfr_t denominator;
-    mpfr_init2(denominator, PRECISION);
-
-    mpfr_t remainingMass;
-    mpfr_init2(remainingMass, PRECISION);
+    mpfr_t denominator, remainingMass;
+    mpfr_init(denominator);
+    mpfr_init(remainingMass);
     mpfr_set(remainingMass, mass, MPFR_RNDN);
-    mpfr_set_zero(deltaV, 0);
-    for (auto &stage: stages) {
-        mpfr_set(stage->deltaV, remainingMass, MPFR_RNDN);
-        mpfr_sub(denominator, remainingMass, stage->fuelMass, MPFR_RNDN);
-        mpfr_div(stage->deltaV, stage->deltaV, denominator, MPFR_RNDN);
-        mpfr_log(stage->deltaV, stage->deltaV, MPFR_RNDN);
-        mpfr_mul(stage->deltaV, stage->deltaV, stage->engine->exhaustVelocity, MPFR_RNDN);
+    mpfr_set_zero(deltaV, 0);                                                           // deltaV = 0
+    for (auto &stage: stages) {                                                         // for each stage:
+        mpfr_set(stage->deltaV, remainingMass, MPFR_RNDN);                                  // a = stage->remainingMass
+        mpfr_sub(denominator, remainingMass, stage->fuelMass, MPFR_RNDN);                   // b = a - stage->fuelMass
+        mpfr_div(stage->deltaV, stage->deltaV, denominator, MPFR_RNDN);                     // c = a / b
+        mpfr_log(stage->deltaV, stage->deltaV, MPFR_RNDN);                                  // d = ln(c)p
+        mpfr_mul(stage->deltaV, stage->deltaV, stage->engine->exhaustVelocity, MPFR_RNDN);  // stage->deltaV = d * exhaustVelocity
 
-        mpfr_add(deltaV, deltaV, stage->deltaV, MPFR_RNDN);
-        mpfr_sub(remainingMass, remainingMass, stage->totalMass, MPFR_RNDN);
+        mpfr_add(deltaV, deltaV, stage->deltaV, MPFR_RNDN);                                 // deltaV += stage->deltaV
+        mpfr_sub(remainingMass, remainingMass, stage->totalMass, MPFR_RNDN);                // remainingMass -= stage->totalMass
     }
     mpfr_clear(denominator);
     mpfr_clear(remainingMass);
@@ -99,12 +96,14 @@ void SpaceShip::getRemainingMass (mpfr_t result, const Stage* inputStage) {
     genDeltaV();
 }*/
 
-void SpaceShip::setStageEngine(Stage* stage, Engine* newEngine) {
+void SpaceShip::setStageEngine(Stage* stage, const Engine* newEngine) {
+    // mass += newEngine->mass - stage->engine->mass
     mpfr_sub(mass, mass, stage->engine->mass, MPFR_RNDN);
-    mpfr_sub(stage->totalMass, stage->totalMass, stage->engine->mass, MPFR_RNDN);
+    mpfr_add(mass, mass, newEngine->mass,     MPFR_RNDN);
 
-    mpfr_add(mass, mass, newEngine->mass, MPFR_RNDN);
-    mpfr_add(stage->totalMass, stage->totalMass, newEngine->mass, MPFR_RNDN);
+    // stage->totalMass += newEngine->mass - stage->engine->mass
+    mpfr_sub(stage->totalMass, stage->totalMass, stage->engine->mass, MPFR_RNDN);
+    mpfr_add(stage->totalMass, stage->totalMass, newEngine->mass,     MPFR_RNDN);
 
     stage->engine = newEngine;
     genDeltaV();
@@ -173,13 +172,16 @@ void SpaceShip::addStage(mpfr_t dryMass, mpfr_t fuelMass, const Engine* engine, 
 * @param newMass The new dry mass.
 */
 void SpaceShip::setStageDryMass(Stage* stage, const mpfr_t newMass) {
+    // mass += newMass - stage->dryMass;
     mpfr_sub(mass, mass, stage->dryMass, MPFR_RNDN);
+    mpfr_add(mass, mass, newMass,        MPFR_RNDN);
+
+    // totalMass += newMass - stage->dryMass;
     mpfr_sub(stage->totalMass, stage->totalMass, stage->dryMass, MPFR_RNDN);
+    mpfr_add(stage->totalMass, stage->totalMass, newMass,        MPFR_RNDN);
 
-    mpfr_add(mass, mass, newMass, MPFR_RNDN);
-    mpfr_add(stage->totalMass, stage->totalMass, newMass, MPFR_RNDN);
-
-    mpfr_set(stage->dryMass, newMass, MPFR_RNDN); // stage->dryMass = newMass;
+    // stage->dryMass = newMass;
+    mpfr_set(stage->dryMass, newMass, MPFR_RNDN);
     genDeltaV();
 }
 
