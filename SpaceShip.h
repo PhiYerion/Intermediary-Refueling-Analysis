@@ -1,4 +1,5 @@
 
+#include "cstdio"
 #include <mpfr.h>
 #include <vector>
 #include "Stage.h"
@@ -74,7 +75,7 @@ public:
      */
     void setStageFuelMass(Stage* stage, const mpfr_t newMass);
 
-    void setStageEngine(Stage* stage, Engine* newEngine);
+    void setStageEngine(Stage* stage, const Engine* newEngine);
 
 };
 

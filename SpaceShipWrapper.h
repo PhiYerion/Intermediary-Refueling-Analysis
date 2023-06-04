@@ -138,10 +138,10 @@ public:
     * @param stage Pointer to the stage.
     * @param newMass The new dry mass.
     */
-    void setStageDryMass(uint stageIdx, const double newMass) {
+    void setStageDryMass(uint stageIdx, const long double newMass) {
         mpfr_t newMass_mpfr;
         mpfr_init(newMass_mpfr);
-        mpfr_set_d(newMass_mpfr, newMass, MPFR_RNDN);
+        mpfr_set_ld(newMass_mpfr, newMass, MPFR_RNDN);
         SpaceShip::setStageDryMass(stages[stageIdx], newMass_mpfr);
         mpfr_clear(newMass_mpfr);
     }
@@ -151,12 +151,16 @@ public:
      * @param stage Pointer to the stage.
      * @param newMass The new fuel mass.
      */
-    void setStageFuelMass(uint stageIdx, const double newMass) {
+    void setStageFuelMass(uint stageIdx, const long double newMass) {
         mpfr_t newMassMPFR;
         mpfr_init(newMassMPFR);
         mpfr_set_d(newMassMPFR, newMass, MPFR_RNDN);
-        SpaceShip::setStageDryMass(stages[stageIdx], newMassMPFR);
+        SpaceShip::setStageFuelMass(stages[stageIdx], newMassMPFR);
         mpfr_clear(newMassMPFR);
+    }
+
+    void setStageEngine(uint stageIdx, const Engine* newEngine) {
+        SpaceShip::setStageEngine(stages[stageIdx], newEngine);
     }
 
     // ===== MPFR GETTERS =====

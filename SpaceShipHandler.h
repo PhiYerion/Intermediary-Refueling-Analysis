@@ -5,6 +5,7 @@
 #include "SpaceShip.h"
 #include "Stage.h"
 #include "Engine.h"
+#include "cstdio"
 #include <mpfr.h>
 #include <vector>
 #include <cmath>
