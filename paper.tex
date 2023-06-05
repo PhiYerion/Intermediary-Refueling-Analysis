@@ -1,0 +1,77 @@
+\documentclass[10pt,a4paper, twocolumn]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\title{Using EML2 Refueling For Mars Lander}
+\begin{document}
+\maketitle
+
+\fontsize{10}{14}\selectfont
+\section{Preliminary Analysis}
+The $\Delta V$ budget for Earth to Mars and Earth to EML2 to Mars is comperable. This fact along with the stability of EML2 allows for possible refueling from Earth to Mars. \\
+
+\subsection{Mars Rocket Propellant Tanks}
+
+\noindent Using common estimates for $\Delta V$ from LEO to EML2 and EML2 to Mars, the difference is only about $0.1kms^{-1}$ out of ~$3.4kms^{-1}$ for LEO to EML2 and $~3.3kms^{-1}$ for EML2 to Low Mars Orbit. This similarity will allow for the same propellant tank to be used for both Earth to EML2 and EML2 to Mars wihout inefficiencies from additional weight from oversized propellant tanks. Additionally, it is preferable for LEO to EML2 to require more fuel than more fuel for EML2 to Mars so that the ascent stage won't have to carry more weight and space. \\
+
+
+\section{Equations}
+In this section, we present three equations related to our research.
+
+\subsection{Equation 1: Taker Initial $\rightarrow$ EML2 Fuel Calculation}
+The first equation calculates the value of $T_F$ based on Mars Rocket ($R$) parameters. It assumes that the tanker is out of atmospheric effects (as this doesn't account for it) and that there is only one stage: \\
+
+$$T_F=\frac{e^{\frac{\Delta V}{V_e}}(R_{F_2}(1+R_{d:F}+c)-R_{F_2}(1+R_{d:F})-c}{1+T_{d:F}-e^{\frac{\Delta V}{V_e}}\times T_{d:F}}$$ \\
+
+
+- $T_F$: Tanker Fuel.
+
+- $\Delta V$: Velocity budget required to get to EML-2 from initial point
+.
+- $V_e$: Exhaust Velosity.
+
+- $R_{F_2}$: Fuel Required for Mars Rocket.
+
+- $R_{d:F}$: The ratio between drymass of propellant tanks and fuel for $R$.
+
+- $c$: Invarient mass of the Tanker.
+
+- $T_{d:F}$: The ratio between drymass of propellant tanks and fuel for $T$ to get to EML2. 
+
+\subsection{Equation 2: EML2 $\rightarrow$ Mars Fuel ($R_{F_2}$) Calculation}
+\noindent The second equation defines the amount of fuel needed for Mars Rocket to get to Mars from EML2. Entry, Descent, and Landing should not be factored in here. Rather, that should be the craft within the payload section of this equation: \\
+
+$$R_{F_2}=\frac{pe^{\frac{\Delta V}{V_e}} - p}{1+R_{d:F}-R_{d:F}\times e^{\frac{\Delta V}{V_e}}}$$ \\
+
+- $R_{F_2}$: Fuel needed to get to Mars from EML2.
+
+- $\Delta V$: Velocity budget required to get to Mars from EML-2.
+
+- $V_e$: Exhaust Velosity.
+
+- $p$: Payload.
+
+- $R_{d:F}$: The ratio between the dry mass of the propellant tanks and fuel within.
+
+\subsection{Equation 2: Mars Rocket Initial $\rightarrow$ EML2 Fuel Calculation}
+\noindent The third equation definates the amount of fuel for Mars Rocket ($R$) to get to EML2 from it's initial point. This assumes initial point is out of atmospheric effects (as this doesn't account for it) and only has one stage that it shares with EML2 $\rightarrow$ Mars. \\
+
+$$R_{F_1} > R_{F_2} \implies R_{F_1} = \frac{ce^{\frac{\Delta V}{V_e}}-c}{1+R_{d:F}-R_{d:F} \times e^{\frac{\Delta V}{V_e}}}$$ \\
+
+$$R_{F_1} < R_{F_2} \implies R_{F_1} = e^{\frac{\Delta V}{V_e}}(R_{d:F}R_{F_2}+c)-aR_{F_2}-c$$ \\
+
+- $R_{F_1}$: Mars Rocket Fuel to get to EML2 from initial point.
+
+- $R_{F_2}$: Mars Rocket Fuel to get to Mars from EML2.
+
+- $\Delta V$: Velocity budget required to get to EML-2 from initial point
+
+- $V_e$: Exhaust Velosity.
+
+- $R_{d:F}$: The ratio between drymass of propellant tanks and fuel for $R$.
+
+- $c$: Invarient mass of the Mars Rocket.
+
+\end{document}

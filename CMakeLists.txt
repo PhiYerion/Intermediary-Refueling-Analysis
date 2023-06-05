@@ -8,7 +8,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -lmpfr -lgmp -g -O0")
 
-add_executable(tests Tester.cpp SpaceShip.cpp Engine.cpp Stage.cpp)
+add_executable(tests tests/Tester.cpp SpaceShip.cpp Engine.cpp Stage.cpp)
 add_executable(ira main.cpp SpaceShip.cpp Engine.cpp Stage.cpp)
 
 
