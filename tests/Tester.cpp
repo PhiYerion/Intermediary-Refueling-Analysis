@@ -20,7 +20,7 @@ void doubleTest(const long double a, const long double b, char* name) {
 TEST_CASE("Accuracy") {
     { // TEST SPACESHIP 1 - Setting values:
         SpaceShipHandler handler(1024);
-        auto ship = handler.addShip();
+        auto ship = handler.addShip("Ship 1");
         handler.createEngine("1.1", 100000.456153, 456123.15687498453);
         ship->addStage(1561.1654893512, 4561312.8564854312, handler.getEngine("1.1"));
 
@@ -40,7 +40,7 @@ TEST_CASE("Accuracy") {
 
     { // TEST SPACESHIP 2 - Random:
         SpaceShipHandler handler(1024);
-        auto ship = handler.addShip();
+        auto ship = handler.addShip("Ship 2");
         handler.createEngine("2.1", 52851.89721221082680102654194342903793, 44949670902.83464924991130828857421875000000);
         ship->addStage(52967195.75027480287462822161614894866943, 976209.93331809725617631556815467774868, handler.getEngine("2.1"));
 
@@ -62,7 +62,7 @@ TEST_CASE("Runtime Errors") {
         std::uniform_real_distribution<long double> valRange(1, 1'000'000'000.0);
         std::uniform_int_distribution<uint> stageRange(10, 30);
 
-        auto* ship = handler.addShip();
+        auto* ship = handler.addShip("Ship " + std::to_string(i));
         const uint stageCount = stageRange(gen);
         stages.push_back(stageCount);
 
@@ -133,8 +133,8 @@ TEST_CASE("Runtime Errors") {
         }
     }
 
-    for (const auto& ship : *handler.getShipList()) {
-        ship->printStats();
+    for (const auto& shipPair : *handler.getShipList()) {
+        shipPair.second->printStats();
     }
 
 }
@@ -181,7 +181,7 @@ TEST_CASE("Crazy") {
         std::vector<stage*> stageList;
 
         SpaceShipHandler handler(1024);
-        auto* ship = handler.addShip();
+        auto* ship = handler.addShip("Ship " + std::to_string(j));
         const uint stageCount = stageRange(gen);
         for (uint i = 0; i < stageCount; i++) {
             Engine newEngine;

@@ -26,7 +26,7 @@ class SpaceShipHandler {
 protected:
     // Hash map will not be implemented for SpaceShipWrapper. This vector is for keeping internal tabs on the ships
     // created (mainly for memory management but also other internal functions).
-    std::vector<SpaceShipWrapper*> shipList;                         /**< Pointer list to the ships. */
+    std::unordered_map<std::string, SpaceShipWrapper*> shipList;                         /**< Pointer list to the ships. */
 
     // It is the handler's job to keep track of engines, all other references to engines are (or at least should be)
     // immutable.
@@ -44,8 +44,8 @@ public:
         mpfr_set_default_prec(precision);                                   // Consider changing this so that other mpfr
     }                                                                       // actions don't override this.
     ~SpaceShipHandler() {
-        for (auto &ship : shipList) {
-            delete ship;
+        for (auto &shipPair : shipList) {
+            delete shipPair.second;
         }
         for (auto &enginePair : engineList) {
             delete enginePair.second;
@@ -55,9 +55,12 @@ public:
     }
 
     // ========== CREATORS ==========
-    SpaceShipWrapper* addShip() {
+    SpaceShipWrapper* addShip(const std::string& name) {
         auto newShip = new SpaceShipWrapper();
-        shipList.push_back(newShip);
+        if (shipList.find(name) != shipList.end()) {
+            std::cerr << "[SpaceShipHandler::addShip] Ship " << name << " already exists." << std::endl;
+        }
+        shipList.insert({name, newShip});
         return newShip;
     }
 
@@ -122,7 +125,7 @@ public:
         return engineList.at(name);
     }
 
-    std::vector<SpaceShipWrapper*>* getShipList() {
+    std::unordered_map<std::string, SpaceShipWrapper*>* getShipList() {
         return &shipList;
     }
 

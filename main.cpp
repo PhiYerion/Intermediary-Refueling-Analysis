@@ -1,22 +1,22 @@
-#include <vector>
-#include <iostream>
-#include <random>
-#include <cstdlib>
-#include "SpaceShipHandler.h"
 #include <QApplication>
+#include "gui/Window.h"
 #include <QVBoxLayout>
-#include <QLabel>
-#include <QtWidgets>
-#include <QtCore>
-#include <QtGui>
-#include "Window.cpp"
 
 int main(int argc, char *argv[]) {
-    SpaceShipHandler handler(1024);
-    QApplication a(argc, argv);
+    QApplication app(argc, argv);
 
-    MyWindow w(&handler);
-    w.show();
+    // Create the main window
+    QWidget window;
 
-    return a.exec();
+    // Create the form widget
+    ShipWidget *formWidget = new ShipWidget(&window);
+
+    // Set up the layout for the main window
+    QVBoxLayout *layout = new QVBoxLayout(&window);
+    layout->addWidget(formWidget);
+
+    // Show the main window
+    window.show();
+
+    return app.exec();
 }
