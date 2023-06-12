@@ -16,28 +16,43 @@ Q_OBJECT
 
 public:
     explicit ShipInitForm(QWidget *parent = nullptr) : QWidget(parent) {
-        // Create a grid layout for the form
-        QGridLayout *layout = new QGridLayout(this);
+        // Apply stylesheets to the widget
+        this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+
+        // Add BoxLayout for Engine Creator
+        QVBoxLayout* layout = new QVBoxLayout(this);
+
+        // Create a grid for the form
+        QGridLayout *grid = new QGridLayout();
+
+        // Header
+        HeaderWidget* headerWidget = new HeaderWidget("New Ship");
+        layout->addWidget(headerWidget);
 
         // Create the input boxes and labels
-        QLabel *label1 = new QLabel("Name:", this);
-        QLabel *label2 = new QLabel("Stages:", this);
+        QLabel *label1 = new QLabel("Name:");
+        QLabel *label2 = new QLabel("Stages:");
 
-        input1_ = new QLineEdit(this);
-        input2_ = new QLineEdit(this);
+        input1_ = new QLineEdit();
+        input2_ = new QLineEdit();
 
         // Create the "Enter" button
-        QPushButton *enterButton = new QPushButton("Enter", this);
+        QPushButton *enterButton = new QPushButton("Enter");
 
         // Connect the button's clicked signal to a slot
         QObject::connect(enterButton, &QPushButton::clicked, this, &ShipInitForm::handleEnterClicked);
 
-        // Add the labels, input boxes, and button to the layout
-        layout->addWidget(label1, 0, 0);
-        layout->addWidget(input1_, 0, 1);
-        layout->addWidget(label2, 1, 0);
-        layout->addWidget(input2_, 1, 1);
-        layout->addWidget(enterButton, 2, 0, 1, 2);
+        // Add the labels, input boxes, and button to the grid
+        grid->addWidget(label1, 0, 0);
+        grid->addWidget(input1_, 0, 1);
+        grid->addWidget(label2, 1, 0);
+        grid->addWidget(input2_, 1, 1);
+        grid->addWidget(enterButton, 2, 0, 1, 2);
+
+        QWidget* gridWidget = new QWidget();
+        gridWidget->setLayout(grid);
+        layout->addWidget(gridWidget);
     }
 
 signals:
@@ -53,19 +68,22 @@ private:
 
 class ShipDisplay : public QWidget {
 public:
-    ShipDisplay(QWidget *parent = nullptr) : QWidget(parent) {
+    ShipDisplay(SpaceShipHandler* handler, QWidget *parent = nullptr) : QWidget(parent) {
+        this->handler = handler;
+
         // Create a label to display the numbers
         label_ = new QLabel(this);
-        label_->setText("Numbers will be displayed here.");
+        label_->setText("Stages:");
 
         // Set up the layout
         layout = new QVBoxLayout(this);
         layout->addWidget(label_);
     }
 
-    void setNumbers(std::string name, double stages);
+    void addStageForms(std::string name, double stages);
 
 private:
+    SpaceShipHandler* handler;
     QLabel *label_;
     QVBoxLayout *layout;
 };

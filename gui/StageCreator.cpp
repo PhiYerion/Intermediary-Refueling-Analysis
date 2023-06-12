@@ -10,7 +10,8 @@ void StageCreator::handleEnterClicked() {
 
     // Check if the conversion was successful
     if (ok) {
-        // Emit the numbersEntered signal
+        handler->getShip(shipName)->addStage(dryMass, fuelMass, handler->getEngine(engine), stage);
+
         emit stageFormSubmitted(fuelMass, dryMass, engine);
     } else {
         // Handle invalid input

@@ -18,7 +18,7 @@ catch_discover_tests(tests)
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 file(GLOB QTHEADERFILES "${CMAKE_CURRENT_SOURCE_DIR}/gui/*.h")
-set(HEADERS ${QTHEADERFILES})
+set(HEADERS ${QTHEADERFILES} gui/EngineCreator.h)
 QT5_WRAP_CPP(MOC_SOURCES ${HEADERS})
 
 file(GLOB CPPFILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/gui/*.cpp")

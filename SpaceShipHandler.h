@@ -1,7 +1,3 @@
-//
-// Created by user on 5/24/23.
-//
-
 #include "SpaceShip.h"
 #include "Stage.h"
 #include "Engine.h"
@@ -121,8 +117,16 @@ public:
      * @param name Name of the Engine.
      * @return Pointer to the Engine.
      */
+    SpaceShipWrapper * getShip(const std::string& name) {
+        return shipList.at(name);
+    }
+
     const Engine* getEngine(const std::string& name) {
         return engineList.at(name);
+    }
+
+    const std::unordered_map<std::string, Engine*>* getEngineList() {
+        return &engineList;
     }
 
     std::unordered_map<std::string, SpaceShipWrapper*>* getShipList() {

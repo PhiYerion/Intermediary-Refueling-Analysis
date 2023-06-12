@@ -16,13 +16,20 @@ void ShipInitForm::handleEnterClicked() {
     }
 }
 
-void ShipDisplay::setNumbers(std::string name, double stages) {
-    auto handler = SpaceShipHandler(1024);
-    auto ship = handler.addShip(name);
-    handler.createEngine("newEngine", 100, 100);
+#include <QScrollArea>
+void ShipDisplay::addStageForms(std::string name, double stages) {
+    handler->addShip(name);
+
+    QScrollArea *scrollArea = new QScrollArea();
+    QWidget *scrollContent = new QWidget();
+    QGridLayout* stageFormsWidget = new QGridLayout();
 
     for (int i = 0; i < stages; i++) {
-        StageCreator* stageCreator = new StageCreator(name, i, this);
-        layout->addWidget(stageCreator);
+        StageCreator* stageCreator = new StageCreator(handler, name, i);
+        stageFormsWidget->addWidget(stageCreator, i/3, i%3);
     }
+
+    scrollContent->setLayout(stageFormsWidget);
+    scrollArea->setWidget(scrollContent);
+    layout->addWidget(scrollArea);
 }
