@@ -1,0 +1,7 @@
+add_test( Accuracy /home/user/Projects/EML2-to-Mars/src/mac/tests Accuracy  )
+set_tests_properties( Accuracy PROPERTIES WORKING_DIRECTORY /home/user/Projects/EML2-to-Mars/src/mac)
+add_test( [==[Runtime Errors]==] /home/user/Projects/EML2-to-Mars/src/mac/tests [==[Runtime Errors]==]  )
+set_tests_properties( [==[Runtime Errors]==] PROPERTIES WORKING_DIRECTORY /home/user/Projects/EML2-to-Mars/src/mac)
+add_test( Crazy /home/user/Projects/EML2-to-Mars/src/mac/tests Crazy  )
+set_tests_properties( Crazy PROPERTIES WORKING_DIRECTORY /home/user/Projects/EML2-to-Mars/src/mac)
+set( tests_TESTS Accuracy [==[Runtime Errors]==] Crazy)

@@ -125,6 +125,14 @@ public:
         return engineList.at(name);
     }
 
+    double getEngineMass(const std::string& name) {
+        return mpfr_get_d(engineList.at(name)->mass, MPFR_RNDN);
+    }
+
+    double getEngineExhaustVelocity(const std::string& name) {
+        return mpfr_get_d(engineList.at(name)->exhaustVelocity, MPFR_RNDN);
+    }
+
     const std::unordered_map<std::string, Engine*>* getEngineList() {
         return &engineList;
     }

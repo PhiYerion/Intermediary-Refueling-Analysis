@@ -61,6 +61,8 @@ public:
 
     void addStage(mpfr_t dryMass, mpfr_t fuelMass, const Engine* engine, const int index = -1);
 
+    void setStage(mpfr_t dryMass, mpfr_t fuelMass, const Engine* engine, const int index);
+
     /**
      * @brief Sets the dry mass of a stage.
      * @param stage Pointer to the stage.

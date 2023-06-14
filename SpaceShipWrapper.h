@@ -27,6 +27,19 @@ public:
         mpfr_clear(fuelMass_mpfr);
     }
 
+    void setStage(long double dryMass, long double fuelMass, const Engine* engine, int stageIdx) {
+        mpfr_t dryMass_mpfr, fuelMass_mpfr;
+        mpfr_init(dryMass_mpfr);
+        mpfr_init(fuelMass_mpfr);
+        mpfr_set_ld(dryMass_mpfr, dryMass, MPFR_RNDN);
+        mpfr_set_ld(fuelMass_mpfr, fuelMass, MPFR_RNDN);
+
+        this->SpaceShip::setStage(dryMass_mpfr, fuelMass_mpfr, engine, stageIdx);
+
+        mpfr_clear(dryMass_mpfr);
+        mpfr_clear(fuelMass_mpfr);
+    }
+
     // ========== GETTERS ==========
 
     /**
@@ -46,6 +59,10 @@ public:
         auto result = mpfr_get_ld(remainingMass, MPFR_RNDN);
         mpfr_clear(remainingMass);
         return result;
+    }
+
+    SpaceShip* getRawShip() {
+        return this;
     }
 
     /**

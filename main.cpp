@@ -8,7 +8,7 @@ int main(int argc, char *argv[]) {
     // Create the main window
     QWidget window;
 
-    window.setGeometry(100, 100, 800, 600);
+    window.setGeometry(100, 100, 1400, 900);
 
     // Create the form widget
     ShipWidget *formWidget = new ShipWidget(&window);

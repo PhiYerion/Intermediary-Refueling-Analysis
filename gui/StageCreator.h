@@ -10,12 +10,13 @@
 #include <QDebug>
 #include "SpaceShipHandler.h"
 #include "lib.h"
+#include "ShipList.h"
 
 class StageCreator : public QWidget {
     Q_OBJECT
 
 public:
-    explicit StageCreator(SpaceShipHandler* handler, std::string shipName, int stage, QWidget *parent = nullptr) : QWidget(parent) {
+    explicit StageCreator(SpaceShipHandler* handler, std::string shipName, int stage, ShipList* shipList, QWidget *parent = nullptr) : QWidget(parent) {
         this->handler = handler;
         this->shipName = shipName;
         this->stage = stage;
@@ -62,6 +63,8 @@ public:
         QWidget* gridWidget = new QWidget();
         gridWidget->setLayout(grid);
         layout->addWidget(gridWidget);
+
+        QObject::connect(this, &StageCreator::stageFormSubmitted, shipList, &ShipList::update);
     }
 
     signals:

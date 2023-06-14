@@ -166,6 +166,22 @@ void SpaceShip::addStage(mpfr_t dryMass, mpfr_t fuelMass, const Engine* engine, 
     genDeltaV();
 }
 
+void SpaceShip::setStage(mpfr_t dryMass, mpfr_t fuelMass, const Engine* engine, const int index) {
+    mpfr_sub(mass, mass, stages[index]->totalMass, MPFR_RNDN);
+
+    Stage* stage = stages[index];
+    stage->engine = engine;
+
+    mpfr_set(stage->dryMass, dryMass, MPFR_RNDN);
+    mpfr_set(stage->fuelMass, fuelMass, MPFR_RNDN);
+
+    mpfr_add(stage->totalMass, stage->dryMass, stage->fuelMass, MPFR_RNDN);
+    mpfr_add(stage->totalMass, stage->totalMass, stage->engine->mass, MPFR_RNDN);
+
+    mpfr_add(mass, mass, stage->totalMass, MPFR_RNDN);
+    genDeltaV();
+}
+
 /**
 * @brief Sets the dry mass of a stage.
 * @param stage Pointer to the stage.

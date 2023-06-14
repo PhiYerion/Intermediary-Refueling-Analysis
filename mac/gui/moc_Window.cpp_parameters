@@ -1,0 +1,6 @@
+-I/home/user/Projects/EML2-to-Mars/src
+-I/home/user/Projects/EML2-to-Mars/src/gui
+-I/home/user/Projects/EML2-to-Mars/src
+-o
+/home/user/Projects/EML2-to-Mars/src/mac/gui/moc_Window.cpp
+/home/user/Projects/EML2-to-Mars/src/gui/Window.h

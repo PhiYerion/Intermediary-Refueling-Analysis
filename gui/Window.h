@@ -7,7 +7,9 @@
 #include "SpaceShipHandler.h"
 #include "ShipCreator.h"
 #include "EngineCreator.h"
+#include "EngineList.h"
 #include "lib.h"
+#include "ShipList.h"
 
 class CustomFrame : public QFrame {
 public:
@@ -24,43 +26,63 @@ protected:
     }
 };
 
+
+CustomFrame* customBox(QWidget* content, QWidget* parent = nullptr) {
+    CustomFrame* frame = new CustomFrame;
+    frame->setFrameShape(QFrame::Box);
+    frame->setLineWidth(1);
+
+    QVBoxLayout* frameLayout = new QVBoxLayout(frame);
+    frameLayout->addWidget(content);
+    return frame;
+}
+
 class ShipWidget : public QWidget {
 public:
     ShipWidget(QWidget *parent = nullptr) : QWidget(parent) {
         SpaceShipHandler* handler = new SpaceShipHandler(1024);
 
+        QHBoxLayout* hLayout = new QHBoxLayout(this);
+
+        // Create SpaceShip list
+        ShipList* shipList = new ShipList(handler);
+        hLayout->addWidget(shipList);
+
         // Create the header widget
         HeaderWidget* headerWidget = new HeaderWidget("Creator");
 
         // Create Engine input form
-
-        CustomFrame* engineFrame = new CustomFrame;
-        engineFrame->setFrameShape(QFrame::Box);
-        engineFrame->setLineWidth(1);
-
         EngineCreator* engineForm = new EngineCreator(handler);
-        QVBoxLayout* frameLayout = new QVBoxLayout(engineFrame);
-        frameLayout->addWidget(engineForm);
+        CustomFrame* engineFrame = customBox(engineForm, this);
 
 
         // Create the input form
-        ShipInitForm* inputForm = new ShipInitForm();
+        ShipInitForm* inputForm = new ShipInitForm(shipList);
+        CustomFrame* inputFrame = customBox(inputForm, this);
 
         // Create the number display widget
-        ShipDisplay* displayWidget = new ShipDisplay(handler);
+        ShipDisplay* displayWidget = new ShipDisplay(handler, shipList);
+        CustomFrame* displayFrame = customBox(displayWidget, this);
 
         // Connect the numbersEntered signal to the setNumbers slot
         QObject::connect(inputForm, &ShipInitForm::formSubmitted, displayWidget, &ShipDisplay::addStageForms);
 
         // Set up the layout for the main window
-        QVBoxLayout *layout = new QVBoxLayout();
-        layout->addWidget(headerWidget);
-        layout->addWidget(engineFrame);
-        layout->addWidget(inputForm);
-        layout->addWidget(displayWidget);
+        QVBoxLayout *vLayout = new QVBoxLayout();
+        vLayout->addWidget(headerWidget);
+        vLayout->addWidget(engineFrame);
+        vLayout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Preferred));
+        vLayout->addWidget(inputFrame);
+        vLayout->addWidget(displayFrame);
+
+        EngineList* list = new EngineList(handler);
+        QObject::connect(engineForm, &EngineCreator::engineFormSubmitted, list, &EngineList::update);
+        hLayout->addLayout(vLayout);
+        hLayout->addWidget(list);
+
 
         // Set the layout for the widget
-        setLayout(layout);
+        setLayout(hLayout);
     }
 };
 

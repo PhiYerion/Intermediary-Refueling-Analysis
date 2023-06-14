@@ -10,12 +10,15 @@
 #include <QDebug>
 #include "lib.h"
 #include "StageCreator.h"
+#include "ShipList.h"
 
 class ShipInitForm : public QWidget {
 Q_OBJECT
 
 public:
-    explicit ShipInitForm(QWidget *parent = nullptr) : QWidget(parent) {
+    explicit ShipInitForm(ShipList* shipList, QWidget *parent = nullptr) : QWidget(parent) {
+        this->shipList = shipList;
+
         // Apply stylesheets to the widget
         this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -56,7 +59,7 @@ public:
     }
 
 signals:
-    void formSubmitted(std::string a, double b);
+    void formSubmitted(std::string a, double b, ShipList* shipList);
 
 private slots:
     void handleEnterClicked();
@@ -64,11 +67,12 @@ private slots:
 private:
     QLineEdit *input1_;
     QLineEdit *input2_;
+    ShipList* shipList;
 };
 
 class ShipDisplay : public QWidget {
 public:
-    ShipDisplay(SpaceShipHandler* handler, QWidget *parent = nullptr) : QWidget(parent) {
+    ShipDisplay(SpaceShipHandler* handler, ShipList* shipList, QWidget *parent = nullptr) : QWidget(parent) {
         this->handler = handler;
 
         // Create a label to display the numbers
@@ -80,7 +84,7 @@ public:
         layout->addWidget(label_);
     }
 
-    void addStageForms(std::string name, double stages);
+    void addStageForms(std::string name, double stages, ShipList* shipList);
 
 private:
     SpaceShipHandler* handler;
