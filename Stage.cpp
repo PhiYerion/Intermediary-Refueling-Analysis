@@ -67,7 +67,6 @@ Stage& Stage::operator=(Stage&& other) noexcept {
     // should only be in debugging, so exception here should be removed after.
     if (other.engine == nullptr) {
         std::cerr << "[Stage::operator=] Move invalid. Check engine handler." << std::endl;
-        throw std::runtime_error("Null pointer exception");
     }
 
     if (this == &other) {
@@ -86,7 +85,6 @@ Stage::Stage(Stage&& other) noexcept {
     // should only be in debugging, so exception here should be removed after.
     if (other.engine == nullptr) {
         std::cerr << "[Stage::operator=] Move invalid. Check engine handler." << std::endl;
-        throw std::runtime_error("Null pointer exception");
     }
     deltaV[0] = other.deltaV[0];
     dryMass[0] = other.dryMass[0];

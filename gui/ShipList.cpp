@@ -4,7 +4,7 @@
 
 #include "ShipList.h"
 
-void ShipList::update(double a, double b, std::string c) {
+void ShipList::update() {
     layout()->removeWidget(scrollArea);
 
     scrollArea = new QScrollArea();

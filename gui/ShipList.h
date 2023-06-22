@@ -28,7 +28,7 @@ public:
     }
 
 public slots:
-    void update(double a, double b, std::string c);
+    void update();
 
 private:
     Handler* handler;

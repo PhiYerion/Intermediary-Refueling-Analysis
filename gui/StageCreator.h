@@ -68,7 +68,7 @@ public:
     }
 
     signals:
-        void stageFormSubmitted(double a, double b, std::string c);
+        void stageFormSubmitted();
 
 private slots:
     void handleEnterClicked();

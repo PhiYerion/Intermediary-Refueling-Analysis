@@ -3,18 +3,22 @@
 void StageCreator::handleEnterClicked() {
     std::string engine = input3_->currentText().toStdString();
 
-    bool ok;
-    double fuelMass, dryMass;
-    fuelMass = input1_->text().toDouble(&ok);
-    ok ? dryMass = input2_->text().toDouble(&ok) : 0;
+    const auto& fuelMass = input1_->text().trimmed().toStdString();
+    const auto& dryMass = input2_->text().trimmed().toStdString();
+
+    try {
+        size_t pos;
+        std::stod(fuelMass + dryMass, &pos);
+        if (pos < fuelMass.length() + dryMass.length()) {
+            throw std::invalid_argument("Invalid input. Please enter numbers.");
+        }
+    } catch (std::invalid_argument& e) {
+        qDebug() << "Invalid input. Please enter numbers.";
+        return;
+    }
 
     // Check if the conversion was successful
-    if (ok) {
-        handler->getShip(shipName)->setStage(dryMass, fuelMass, handler->getEngine(engine), stage);
+    handler->getShip(shipName)->setStage(dryMass, fuelMass, handler->getEngine(engine), stage);
 
-        emit stageFormSubmitted(fuelMass, dryMass, engine);
-    } else {
-        // Handle invalid input
-        qDebug() << "Invalid input. Please enter numbers.";
-    }
+    emit stageFormSubmitted();
 }

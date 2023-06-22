@@ -14,12 +14,12 @@ class ShipWrapper : Ship {
 public:
 
     // ========== CREATORS ==========
-    void addStage(long double dryMass, long double fuelMass, const Engine* engine, int stageIdx = -1) {
+    void addStage(const std::string& dryMass, const std::string& fuelMass, const Engine* engine, int stageIdx = -1) {
         mpfr_t dryMass_mpfr, fuelMass_mpfr;
         mpfr_init(dryMass_mpfr);
         mpfr_init(fuelMass_mpfr);
-        mpfr_set_ld(dryMass_mpfr, dryMass, MPFR_RNDN);
-        mpfr_set_ld(fuelMass_mpfr, fuelMass, MPFR_RNDN);
+        mpfr_set_str(dryMass_mpfr, dryMass.c_str(), 10, MPFR_RNDN);
+        mpfr_set_str(fuelMass_mpfr, fuelMass.c_str(), 10, MPFR_RNDN);
 
         this->Ship::addStage(dryMass_mpfr, fuelMass_mpfr, engine, stageIdx);
 
@@ -27,12 +27,12 @@ public:
         mpfr_clear(fuelMass_mpfr);
     }
 
-    void setStage(long double dryMass, long double fuelMass, const Engine* engine, int stageIdx) {
+    void setStage(const std::string& dryMass, const std::string& fuelMass, const Engine* engine, int stageIdx) {
         mpfr_t dryMass_mpfr, fuelMass_mpfr;
         mpfr_init(dryMass_mpfr);
         mpfr_init(fuelMass_mpfr);
-        mpfr_set_ld(dryMass_mpfr, dryMass, MPFR_RNDN);
-        mpfr_set_ld(fuelMass_mpfr, fuelMass, MPFR_RNDN);
+        mpfr_set_str(dryMass_mpfr, dryMass.c_str(), 10, MPFR_RNDN);
+        mpfr_set_str(fuelMass_mpfr, fuelMass.c_str(), 10, MPFR_RNDN);
 
         this->Ship::setStage(dryMass_mpfr, fuelMass_mpfr, engine, stageIdx);
 
@@ -159,10 +159,10 @@ public:
     * @param stage Pointer to the stage.
     * @param newMass The new dry mass.
     */
-    void setStageDryMass(uint stageIdx, const long double newMass) {
+    void setStageDryMass(uint stageIdx, const std::string& newMass) {
         mpfr_t newMass_mpfr;
         mpfr_init(newMass_mpfr);
-        mpfr_set_ld(newMass_mpfr, newMass, MPFR_RNDN);
+        mpfr_set_str(newMass_mpfr, newMass.c_str(), 10, MPFR_RNDN);
         Ship::setStageDryMass(stages[stageIdx], newMass_mpfr);
         mpfr_clear(newMass_mpfr);
     }
@@ -172,10 +172,10 @@ public:
      * @param stage Pointer to the stage.
      * @param newMass The new fuel mass.
      */
-    void setStageFuelMass(uint stageIdx, const long double newMass) {
+    void setStageFuelMass(uint stageIdx, const std::string& newMass) {
         mpfr_t newMassMPFR;
         mpfr_init(newMassMPFR);
-        mpfr_set_d(newMassMPFR, newMass, MPFR_RNDN);
+        mpfr_set_str(newMassMPFR, newMass.c_str(), 10, MPFR_RNDN);
         Ship::setStageFuelMass(stages[stageIdx], newMassMPFR);
         mpfr_clear(newMassMPFR);
     }

@@ -7,7 +7,7 @@ include_directories(gui)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_FLAGS  "-march=native -fexcess-precision=standard -ffloat-store -lmpfr -lgmp -g -O0 -DQT_WIDGETS_LIB -I/usr/include/qt/QtWidgets -I/usr/include/qt -I/usr/include/qt/QtCore -DQT_GUI_LIB -I/usr/include/qt/QtGui -DQT_CORE_LIB -lQt5Widgets -lQt5Core -lQt5Gui")
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -lmpfr -lgmp -g -O0 -DQT_WIDGETS_LIB -I/usr/include/qt/QtWidgets -I/usr/include/qt -I/usr/include/qt/QtCore -DQT_GUI_LIB -I/usr/include/qt/QtGui -DQT_CORE_LIB -lQt5Widgets -lQt5Core -lQt5Gui")
 
 add_executable(tests tests/Tester.cpp Ship.cpp Engine.cpp Stage.cpp)
 

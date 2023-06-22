@@ -59,7 +59,7 @@ public:
     }
 
     signals:
-            void engineFormSubmitted(std::string a, double b, double c);
+            void engineFormSubmitted();
 
 private slots:
             void handleEnterClicked();

@@ -3,25 +3,25 @@
 //
 
 #include "EngineCreator.h"
+#include <cctype>
 
 void EngineCreator::handleEnterClicked() {
-    // Convert the text to numbers
-    bool ok;
     auto name = input1_->text().toStdString();
+    const auto& mass = input2_->text().trimmed().toStdString();
+    const auto& exhaustVelocity = input3_->text().trimmed().toStdString();
 
-    double mass, exhaustVelocity;
-    mass = input2_->text().toDouble(&ok);
-    ok ? exhaustVelocity = input3_->text().toDouble(&ok) : 0;
-
-
-    // Check if the conversion was successful
-    if (ok) {
-        handler->createEngine(name, mass, exhaustVelocity);
-
-        // Emit the numbersEntered signal
-        emit engineFormSubmitted(name, mass, exhaustVelocity);
-    } else {
-        // Handle invalid input
+    try {
+        size_t pos;
+        std::stod(mass + exhaustVelocity, &pos);
+        if (pos < mass.length() + exhaustVelocity.length()) {
+            throw std::invalid_argument("Invalid input. Please enter numbers.");
+        }
+    } catch (std::invalid_argument& e) {
         qDebug() << "Invalid input. Please enter numbers.";
+        return;
     }
+    handler->createEngine(name, mass, exhaustVelocity);
+
+    // Emit the numbersEntered signal
+    emit engineFormSubmitted();
 }

@@ -60,7 +60,7 @@ public:
         return newShip;
     }
 
-    int createEngine(std::string name, const long double mass, const long double exhaustVelocity) {
+    int createEngine(const std::string& name, const std::string& mass, const std::string& exhaustVelocity) {
         // There cannot be conflicts for multiple reasons. One, it makes it impossible to find the engine. Two,
         // It generates a memory leak. Three, it should prompt the user on the fact that it already exists.
         if (engineList.find(name) != engineList.end()) {
@@ -70,8 +70,8 @@ public:
 
         auto newEngine = new Engine();
 
-        mpfr_set_ld(newEngine->mass, mass, MPFR_RNDN);
-        mpfr_set_ld(newEngine->exhaustVelocity, exhaustVelocity, MPFR_RNDN);
+        mpfr_set_str(newEngine->mass, mass.c_str(), 10, MPFR_RNDN);
+        mpfr_set_str(newEngine->exhaustVelocity, exhaustVelocity.c_str(), 10, MPFR_RNDN);
 
         newEngine->name = name;
         engineList.insert({name, newEngine});
@@ -85,9 +85,9 @@ public:
      * @param ship Pointer to the ship.
      * @return 0 if successful, 1 if not.
      */
-    int setEngineDryMass(const long double mass, const std::string& name) {
+    int setEngineDryMass(const std::string& mass, const std::string& name) {
         try {
-            mpfr_set_ld(engineList.at(name)->mass, mass, MPFR_RNDN);
+            mpfr_set_str(engineList.at(name)->mass, mass.c_str(), 10, MPFR_RNDN);
         } catch (const std::out_of_range& e) {
             std::cerr << "[Handler::setEngineDryMass] Engine " << name << " does not exist." << std::endl;
             return 1;
@@ -101,9 +101,9 @@ public:
      * @param name Name of the engine.
      * @return 0 if successful, 1 if not.
      */
-    int setEngineExhaustVelocity(const long double exhaustVelocity, const std::string& name) {
+    int setEngineExhaustVelocity(const std::string& exhaustVelocity, const std::string& name) {
         try {
-            mpfr_set_ld(engineList.at(name)->exhaustVelocity, exhaustVelocity, MPFR_RNDN);
+            mpfr_set_str(engineList.at(name)->exhaustVelocity, exhaustVelocity.c_str(), 10, MPFR_RNDN);
         } catch (const std::out_of_range& e) {
             std::cerr << "[Handler::setEngineExhaustVelocity] Engine " << name << " does not exist." << std::endl;
             return 1;

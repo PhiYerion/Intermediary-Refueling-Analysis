@@ -84,7 +84,7 @@ public:
         layout->addWidget(label_);
     }
 
-    void addStageForms(std::string name, double stages, ShipList* shipList);
+    void addStageForms(const std::string& name, double stages, ShipList* shipList);
 
 private:
     Handler* handler;

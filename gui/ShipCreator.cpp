@@ -17,19 +17,19 @@ void ShipInitForm::handleEnterClicked() {
 }
 
 #include <QScrollArea>
-void ShipDisplay::addStageForms(std::string name, double stages, ShipList* shipList) {
+void ShipDisplay::addStageForms(const std::string& name, double stages, ShipList* shipList) {
     handler->addShip(name);
 
     QScrollArea *scrollArea = new QScrollArea();
     QWidget *scrollContent = new QWidget();
     QGridLayout* stageFormsWidget = new QGridLayout();
 
-    handler->createEngine("None", 0, 0);
+    handler->createEngine("None", "0", "0");
 
     for (int i = 0; i < stages; i++) {
         StageCreator* stageCreator = new StageCreator(handler, name, i, shipList);
         stageFormsWidget->addWidget(stageCreator, i/3, i%3);
-        handler->getShip(name)->addStage(0, 0, handler->getEngine("None"));
+        handler->getShip(name)->addStage("0", "0", handler->getEngine("None"));
     }
 
     scrollContent->setLayout(stageFormsWidget);
