@@ -105,6 +105,10 @@ public:
         return mpfr_get_ld(stages[stageIdx]->totalMass, MPFR_RNDN);
     }
 
+    const Engine* getStageEngine(uint stageIdx) {
+        return stages[stageIdx]->engine;
+    }
+
     /**
     * @brief Returns ld from engine mass of type mpfr_t.
     * @note If you stage pointer, use stageptr->getEngineMass instead.
