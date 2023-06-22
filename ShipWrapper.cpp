@@ -3,116 +3,202 @@
 //
 
 #include "ShipWrapper.h"
-/*
 
-    Handler(long precision) {
-        mpfr_set_default_prec(precision);                                   // Consider changing this so that other mpfr
-    }                                                                       // actions don't override this.
-    Handler    for (auto &shipPair : shipList) {
-            delete shipPair.second;
-        }
-        for (auto &enginePair : engineList) {
-            delete enginePair.second;
-        }
-        mpfr_free_cache();
+// ========== CREATORS ==========
+void ShipWrapper::addStage(const std::string& dryMass, const std::string& fuelMass, const Engine* engine, int stageIdx) {
+    mpfr_t dryMass_mpfr, fuelMass_mpfr;
+    mpfr_init(dryMass_mpfr);
+    mpfr_init(fuelMass_mpfr);
+    mpfr_set_str(dryMass_mpfr, dryMass.c_str(), 10, MPFR_RNDN);
+    mpfr_set_str(fuelMass_mpfr, fuelMass.c_str(), 10, MPFR_RNDN);
 
-    }
+    this->Ship::addStage(dryMass_mpfr, fuelMass_mpfr, engine, stageIdx);
 
-    // ========== CREATORS ==========
-    ShipWrapper* addShip(const std::string& name) {
-        auto newShip = new ShipWrapper();
-        if (shipList.find(name) != shipList.end()) {
-            std::cerr << "[Handler::addShip] Ship " << name << " already exists." << std::endl;
-        }
-        shipList.insert({name, newShip});
-        return newShip;
-    }
+    mpfr_clear(dryMass_mpfr);
+    mpfr_clear(fuelMass_mpfr);
+}
 
-    int createEngine(std::string name, const long double mass, const long double exhaustVelocity) {
-        // There cannot be conflicts for multiple reasons. One, it makes it impossible to find the engine. Two,
-        // It generates a memory leak. Three, it should prompt the user on the fact that it already exists.
-        if (engineList.find(name) != engineList.end()) {
-            std::cerr << "[Handler::createEngine] Engine " << name << " already exists." << std::endl;
-            return 1;
-        }
+void ShipWrapper::setStage(const std::string& dryMass, const std::string& fuelMass, const Engine* engine, int stageIdx) {
+    mpfr_t dryMass_mpfr, fuelMass_mpfr;
+    mpfr_init(dryMass_mpfr);
+    mpfr_init(fuelMass_mpfr);
+    mpfr_set_str(dryMass_mpfr, dryMass.c_str(), 10, MPFR_RNDN);
+    mpfr_set_str(fuelMass_mpfr, fuelMass.c_str(), 10, MPFR_RNDN);
 
-        auto newEngine = new Engine();
+    this->Ship::setStage(dryMass_mpfr, fuelMass_mpfr, engine, stageIdx);
 
-        mpfr_set_ld(newEngine->mass, mass, MPFR_RNDN);
-        mpfr_set_ld(newEngine->exhaustVelocity, exhaustVelocity, MPFR_RNDN);
+    mpfr_clear(dryMass_mpfr);
+    mpfr_clear(fuelMass_mpfr);
+}
 
-        newEngine->name = name;
-        engineList.insert({name, newEngine});
-        return 0;
-    }
+// ========== GETTERS ==========
 
-    // ========== SETTERS ==========
-    */
 /**
-     * @brief Sets the mass of the ship.
-     * @param mass To-be mass.
-     * @param ship Pointer to the ship.
-     * @return 0 if successful, 1 if not.
-     *//*
-
-    int setEngineDryMass(const long double mass, const std::string& name) {
-        try {
-            mpfr_set_ld(engineList.at(name)->mass, mass, MPFR_RNDN);
-        } catch (const std::out_of_range& e) {
-            std::cerr << "[Handler::setEngineDryMass] Engine " << name << " does not exist." << std::endl;
-            return 1;
-        }
-        return 0;
-    }
-
-    */
-/**
-     * @brief Sets the engine exhaust velocity.
-     * @param exhaustVelocity To-be exhaust velocity.
-     * @param name Name of the engine.
-     * @return 0 if successful, 1 if not.
-     *//*
-
-    int setEngineExhaustVelocity(const long double exhaustVelocity, const std::string& name) {
-        try {
-            mpfr_set_ld(engineList.at(name)->exhaustVelocity, exhaustVelocity, MPFR_RNDN);
-        } catch (const std::out_of_range& e) {
-            std::cerr << "[Handler::setEngineExhaustVelocity] Engine " << name << " does not exist." << std::endl;
-            return 1;
-        }
-        return 0;
-    }
-
-    // ========== GETTERS ==========
-    */
-/**
-     * @brief Gets the engine by name. Errors have to be handled.
-     * @param name Name of the Engine.
-     * @return Pointer to the Engine.
-     *//*
-
-    ShipWrapper * getShip(const std::string& name) {
-        return shipList.at(name);
-    }
-
-    const Engine* getEngine(const std::string& name) {
-        return engineList.at(name);
-    }
-
-    double getEngineMass(const std::string& name) {
-        return mpfr_get_d(engineList.at(name)->mass, MPFR_RNDN);
-    }
-
-    double getEngineExhaustVelocity(const std::string& name) {
-        return mpfr_get_d(engineList.at(name)->exhaustVelocity, MPFR_RNDN);
-    }
-
-    const std::unordered_map<std::string, Engine*>* getEngineList() {
-        return &engineList;
-    }
-
-    std::unordered_map<std::string, ShipWrapper*>* getShipList() {
-        return &shipList;
-    }
+* @brief Returns ld from remaining mass of type mpfr_t.
+* @param stageIdx index of the stage.
+* @return remaining mass of stages above + specified stage.
 */
+long double ShipWrapper::getRemainingMass(uint stageIdx) {
+    mpfr_t remainingMass;
+    mpfr_init(remainingMass);
+    mpfr_set_zero(remainingMass, 0);
+    for (long i = getStages()->size() - 1; i >= stageIdx; i--) {                        // don't change to unsigned long
+        mpfr_add(remainingMass, remainingMass, stages[i]->dryMass, MPFR_RNDN);          // as it will cause infinite loop
+        mpfr_add(remainingMass, remainingMass, stages[i]->fuelMass, MPFR_RNDN);         // at stage 0
+        mpfr_add(remainingMass, remainingMass, stages[i]->engine->mass, MPFR_RNDN);
+    }
+    auto result = mpfr_get_ld(remainingMass, MPFR_RNDN);
+    mpfr_clear(remainingMass);
+    return result;
+}
 
+Ship* ShipWrapper::getRawShip() {
+    return this;
+}
+
+/**
+* @brief Returns ld from dryMass of type mpfr_t.
+* @note If you stage pointer, use stageptr->getDryMass instead.
+* @param stageIdx index of the stage.
+* @return Dry mass of the stage.
+*/
+long double ShipWrapper::getStageDryMass(uint stageIdx) {
+    return mpfr_get_ld(stages[stageIdx]->dryMass, MPFR_RNDN);
+}
+
+/**
+* @brief Returns ld from fuel mass of type mpfr_t.
+* @note If you stage pointer, use stageptr->getFuelMass instead.
+* @param stageIdx index of the stage.
+* @return Fuel mass of the stage.
+*/
+long double ShipWrapper::getStageFuelMass(uint stageIdx) {
+    return mpfr_get_ld(stages[stageIdx]->fuelMass, MPFR_RNDN);
+}
+
+/**
+* @brief Returns ld from delta-v of type mpfr_t.
+* @note If you stage pointer, use stageptr->getDeltaV instead.
+* @param stageIdx index of the stage.
+* @return Delta-v of the stage.
+*/
+long double ShipWrapper::getStageDeltaV(uint stageIdx) {
+    return mpfr_get_ld(stages[stageIdx]->deltaV, MPFR_RNDN);
+}
+
+/**
+* @brief Returns ld from total mass of type mpfr_t.
+* @note If you stage pointer, use stageptr->getTotalMass instead.
+* @param stageIdx index of the stage.
+* @return Total mass of the stage.
+*/
+long double ShipWrapper::getStageTotalMass(uint stageIdx) {
+    return mpfr_get_ld(stages[stageIdx]->totalMass, MPFR_RNDN);
+}
+
+const Engine* ShipWrapper::getStageEngine(uint stageIdx) {
+    return stages[stageIdx]->engine;
+}
+
+/**
+* @brief Returns ld from engine mass of type mpfr_t.
+* @note If you stage pointer, use stageptr->getEngineMass instead.
+* @param stageIdx index of the stage.
+* @return Engine mass of the stage.
+*/
+long double ShipWrapper::getStageEngineMass(uint stageIdx) {
+    return mpfr_get_ld(stages[stageIdx]->engine->mass, MPFR_RNDN);
+}
+
+/**
+* @brief Returns ld from exhaust velocity of type mpfr_t.
+* @note If you stage pointer, use stageptr->getExhaustVelocity instead.
+* @param stageIdx index of the stage.
+* @return Exhaust velocity of the stage.
+*/
+long double ShipWrapper::getStageExhaustVelocity(uint stageIdx) {
+    return mpfr_get_ld(stages[stageIdx]->engine->exhaustVelocity, MPFR_RNDN);
+}
+
+/**
+ * @brief Returns the total mass of the spaceship.
+ * @return Total mass of the spaceship.
+ */
+long double ShipWrapper::getMass() {
+    return mpfr_get_ld(mass, MPFR_RNDN);
+}
+
+/**
+ * @brief Returns the total delta-V of the spaceship.
+ * @return Total delta-V of the spaceship.
+ */
+long double ShipWrapper::getDeltaV() {
+    return mpfr_get_ld(deltaV, MPFR_RNDN);
+}
+
+const std::vector<Stage*>* ShipWrapper::getStages() {
+    return &stages;
+}
+
+
+// ========== SETTERS ==========
+//   This is unoptimized from version before Handler merge, but abstraction
+//   and modularity is more important when working in this environment.
+
+/**
+* @brief Sets the dry mass of a stage.
+* @param stage Pointer to the stage.
+* @param newMass The new dry mass.
+*/
+void ShipWrapper::setStageDryMass(uint stageIdx, const std::string& newMass) {
+    mpfr_t newMass_mpfr;
+    mpfr_init(newMass_mpfr);
+    mpfr_set_str(newMass_mpfr, newMass.c_str(), 10, MPFR_RNDN);
+    Ship::setStageDryMass(stages[stageIdx], newMass_mpfr);
+    mpfr_clear(newMass_mpfr);
+}
+
+/**
+ * @brief Sets the fuel mass of a stage.
+ * @param stage Pointer to the stage.
+ * @param newMass The new fuel mass.
+ */
+void ShipWrapper::setStageFuelMass(uint stageIdx, const std::string& newMass) {
+    mpfr_t newMassMPFR;
+    mpfr_init(newMassMPFR);
+    mpfr_set_str(newMassMPFR, newMass.c_str(), 10, MPFR_RNDN);
+    Ship::setStageFuelMass(stages[stageIdx], newMassMPFR);
+    mpfr_clear(newMassMPFR);
+}
+
+void ShipWrapper::setStageEngine(uint stageIdx, const Engine* newEngine) {
+    Ship::setStageEngine(stages[stageIdx], newEngine);
+}
+
+// ===== MPFR GETTERS =====
+void ShipWrapper::getRawDeltaV(mpfr_t result) {
+    mpfr_init(result);
+    mpfr_set(result, deltaV, MPFR_RNDN);
+}
+
+void ShipWrapper::getRawMass(mpfr_t result) {
+    mpfr_init(result);
+    mpfr_set(result, mass, MPFR_RNDN);
+}
+
+// ========== MISC ==========
+void ShipWrapper::printStats() {
+    printf("DeltaV: %.32Lf m/s\n", getDeltaV());
+    printf("Mass: %.32Lf kg\n", getMass());
+    for (uint i = 0; i < stages.size(); i++) {
+        printf("Stage %u:\n", i);
+        printf("\tRemaining Mass: %.32Lf kg\n", getRemainingMass(i));
+        printf("\tTotal Stage Mass: %.32Lf kg\n", getStageTotalMass(i));
+        printf("\tDeltaV: %.32Lf m/s\n", getStageDeltaV(i));
+        printf("\tDryMass: %.32Lf kg\n", getStageDryMass(i));
+        printf("\tFuelMass: %.32Lf kg\n", getStageFuelMass(i));
+        printf("\tEngine %s:\n", stages[i]->engine->name.c_str());
+        printf("\t\tMass: %.32Lf kg\n", getStageEngineMass(i));
+        printf("\t\tExhaust Velocity: %.32Lf m/s\n", getStageExhaustVelocity(i));
+    }
+}

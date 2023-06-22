@@ -36,47 +36,14 @@ public:
      * @param precision Sets "global" mpfr precision, not just for this handler.
      * @note There shouldn't be more than one of these at a time.
      */
-    Handler(long precision) {
-        mpfr_set_default_prec(precision);                                   // Consider changing this so that other mpfr
-    }                                                                       // actions don't override this.
-    ~Handler() {
-        for (auto &shipPair : shipList) {
-            delete shipPair.second;
-        }
-        for (auto &enginePair : engineList) {
-            delete enginePair.second;
-        }
-        mpfr_free_cache();
+    explicit Handler(long precision);
 
-    }
+    ~Handler();
 
     // ========== CREATORS ==========
-    ShipWrapper* addShip(const std::string& name) {
-        auto newShip = new ShipWrapper();
-        if (shipList.find(name) != shipList.end()) {
-            std::cerr << "[Handler::addShip] Ship " << name << " already exists." << std::endl;
-        }
-        shipList.insert({name, newShip});
-        return newShip;
-    }
+    ShipWrapper* addShip(const std::string& name);
 
-    int createEngine(const std::string& name, const std::string& mass, const std::string& exhaustVelocity) {
-        // There cannot be conflicts for multiple reasons. One, it makes it impossible to find the engine. Two,
-        // It generates a memory leak. Three, it should prompt the user on the fact that it already exists.
-        if (engineList.find(name) != engineList.end()) {
-            std::cerr << "[Handler::createEngine] Engine " << name << " already exists." << std::endl;
-            return 1;
-        }
-
-        auto newEngine = new Engine();
-
-        mpfr_set_str(newEngine->mass, mass.c_str(), 10, MPFR_RNDN);
-        mpfr_set_str(newEngine->exhaustVelocity, exhaustVelocity.c_str(), 10, MPFR_RNDN);
-
-        newEngine->name = name;
-        engineList.insert({name, newEngine});
-        return 0;
-    }
+    int createEngine(const std::string& name, const std::string& mass, const std::string& exhaustVelocity);
 
     // ========== SETTERS ==========
     /**
@@ -85,15 +52,7 @@ public:
      * @param ship Pointer to the ship.
      * @return 0 if successful, 1 if not.
      */
-    int setEngineDryMass(const std::string& mass, const std::string& name) {
-        try {
-            mpfr_set_str(engineList.at(name)->mass, mass.c_str(), 10, MPFR_RNDN);
-        } catch (const std::out_of_range& e) {
-            std::cerr << "[Handler::setEngineDryMass] Engine " << name << " does not exist." << std::endl;
-            return 1;
-        }
-        return 0;
-    }
+    int setEngineDryMass(const std::string& mass, const std::string& name);
 
     /**
      * @brief Sets the engine exhaust velocity.
@@ -101,15 +60,7 @@ public:
      * @param name Name of the engine.
      * @return 0 if successful, 1 if not.
      */
-    int setEngineExhaustVelocity(const std::string& exhaustVelocity, const std::string& name) {
-        try {
-            mpfr_set_str(engineList.at(name)->exhaustVelocity, exhaustVelocity.c_str(), 10, MPFR_RNDN);
-        } catch (const std::out_of_range& e) {
-            std::cerr << "[Handler::setEngineExhaustVelocity] Engine " << name << " does not exist." << std::endl;
-            return 1;
-        }
-        return 0;
-    }
+    int setEngineExhaustVelocity(const std::string& exhaustVelocity, const std::string& name);
 
     // ========== GETTERS ==========
     /**
@@ -117,29 +68,17 @@ public:
      * @param name Name of the Engine.
      * @return Pointer to the Engine.
      */
-    ShipWrapper * getShip(const std::string& name) {
-        return shipList.at(name);
-    }
+    ShipWrapper * getShip(const std::string& name);
 
-    const Engine* getEngine(const std::string& name) {
-        return engineList.at(name);
-    }
+    const Engine* getEngine(const std::string& name);
 
-    double getEngineMass(const std::string& name) {
-        return mpfr_get_d(engineList.at(name)->mass, MPFR_RNDN);
-    }
+    double getEngineMass(const std::string& name);
 
-    double getEngineExhaustVelocity(const std::string& name) {
-        return mpfr_get_d(engineList.at(name)->exhaustVelocity, MPFR_RNDN);
-    }
+    double getEngineExhaustVelocity(const std::string& name);
 
-    const std::unordered_map<std::string, Engine*>* getEngineList() {
-        return &engineList;
-    }
+    const std::unordered_map<std::string, Engine*>* getEngineList();
 
-    std::unordered_map<std::string, ShipWrapper*>* getShipList() {
-        return &shipList;
-    }
+    std::unordered_map<std::string, ShipWrapper*>* getShipList();
 
 };
 
