@@ -8,7 +8,7 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QDebug>
-#include "SpaceShipHandler.h"
+#include "Handler.h"
 #include "lib.h"
 #include "ShipList.h"
 
@@ -16,7 +16,7 @@ class StageCreator : public QWidget {
     Q_OBJECT
 
 public:
-    explicit StageCreator(SpaceShipHandler* handler, std::string shipName, int stage, ShipList* shipList, QWidget *parent = nullptr) : QWidget(parent) {
+    explicit StageCreator(Handler* handler, std::string shipName, int stage, ShipList* shipList, QWidget *parent = nullptr) : QWidget(parent) {
         this->handler = handler;
         this->shipName = shipName;
         this->stage = stage;
@@ -74,7 +74,7 @@ private slots:
     void handleEnterClicked();
 
 private:
-    SpaceShipHandler* handler;
+    Handler* handler;
     std::string shipName;
     int stage;
 

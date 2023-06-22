@@ -72,7 +72,7 @@ private:
 
 class ShipDisplay : public QWidget {
 public:
-    ShipDisplay(SpaceShipHandler* handler, ShipList* shipList, QWidget *parent = nullptr) : QWidget(parent) {
+    ShipDisplay(Handler* handler, ShipList* shipList, QWidget *parent = nullptr) : QWidget(parent) {
         this->handler = handler;
 
         // Create a label to display the numbers
@@ -87,7 +87,7 @@ public:
     void addStageForms(std::string name, double stages, ShipList* shipList);
 
 private:
-    SpaceShipHandler* handler;
+    Handler* handler;
     QLabel *label_;
     QVBoxLayout *layout;
 };

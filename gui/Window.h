@@ -4,7 +4,7 @@
 
 #include <QWidget>
 #include <QPainter>
-#include "SpaceShipHandler.h"
+#include "Handler.h"
 #include "ShipCreator.h"
 #include "EngineCreator.h"
 #include "EngineList.h"
@@ -40,11 +40,11 @@ CustomFrame* customBox(QWidget* content, QWidget* parent = nullptr) {
 class ShipWidget : public QWidget {
 public:
     ShipWidget(QWidget *parent = nullptr) : QWidget(parent) {
-        SpaceShipHandler* handler = new SpaceShipHandler(1024);
+        Handler* handler = new Handler(1024);
 
         QHBoxLayout* hLayout = new QHBoxLayout(this);
 
-        // Create SpaceShip list
+        // Create Ship list
         ShipList* shipList = new ShipList(handler);
         hLayout->addWidget(shipList);
 

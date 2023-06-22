@@ -12,14 +12,14 @@
 #include <QVBoxLayout>
 #include <QDebug>
 #include <QScrollArea>
-#include "SpaceShipHandler.h"
+#include "Handler.h"
 #include "lib.h"
 
 class ShipList : public QWidget {
 Q_OBJECT
 
 public:
-    explicit ShipList(SpaceShipHandler* handler, QWidget *parent = nullptr) : QWidget(parent) {
+    explicit ShipList(Handler* handler, QWidget *parent = nullptr) : QWidget(parent) {
         this->handler = handler;
 
         QVBoxLayout* layout = new QVBoxLayout(this);
@@ -31,7 +31,7 @@ public slots:
     void update(double a, double b, std::string c);
 
 private:
-    SpaceShipHandler* handler;
+    Handler* handler;
     QScrollArea *scrollArea;
 };
 

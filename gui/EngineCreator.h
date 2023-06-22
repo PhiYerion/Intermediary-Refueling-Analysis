@@ -10,14 +10,14 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QDebug>
-#include "SpaceShipHandler.h"
+#include "Handler.h"
 #include "lib.h"
 
 class EngineCreator : public QWidget {
     Q_OBJECT
 
 public:
-    explicit EngineCreator(SpaceShipHandler* handler, QWidget *parent = nullptr) : QWidget(parent) {
+    explicit EngineCreator(Handler* handler, QWidget *parent = nullptr) : QWidget(parent) {
         this->handler = handler;
 
         // Add Widget for Engine Creator
@@ -65,7 +65,7 @@ private slots:
             void handleEnterClicked();
 
 private:
-    SpaceShipHandler* handler;
+    Handler* handler;
 
     QLineEdit *input1_;
     QLineEdit *input2_;

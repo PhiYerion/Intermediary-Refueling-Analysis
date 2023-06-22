@@ -14,8 +14,8 @@
  * This class provides getters and setters for accessing and modifying the spaceship's attributes.
  * Directly setting variables will produce inaccurate measurements, so they are protected.
  */
-class SpaceShip {
-    friend class SpaceShipHandler;
+class Ship {
+    friend class Handler;
 
 protected:
     std::vector<Stage*> stages;  /**< Vector of stages. */
@@ -32,9 +32,9 @@ protected:
     void genDeltaV ();
 
 public:
-    SpaceShip();
+    Ship();
 
-    ~SpaceShip();
+    ~Ship();
 
     /**
       * @brief Returns the vector of stages.

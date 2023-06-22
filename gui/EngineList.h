@@ -11,14 +11,14 @@
 #include <QVBoxLayout>
 #include <QDebug>
 #include <QScrollArea>
-#include "SpaceShipHandler.h"
+#include "Handler.h"
 #include "lib.h"
 
 class EngineList : public QWidget {
 Q_OBJECT
 
 public:
-    explicit EngineList(SpaceShipHandler* handler, QWidget *parent = nullptr) : QWidget(parent) {
+    explicit EngineList(Handler* handler, QWidget *parent = nullptr) : QWidget(parent) {
         this->handler = handler;
 
         QVBoxLayout* layout = new QVBoxLayout(this);
@@ -30,7 +30,7 @@ public slots:
     void update();
 
 private:
-    SpaceShipHandler* handler;
+    Handler* handler;
     QScrollArea *scrollArea;
 };
 

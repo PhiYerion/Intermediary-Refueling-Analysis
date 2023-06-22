@@ -2,7 +2,7 @@
 #include <iostream>
 #include <random>
 #include <cstdlib>
-#include "SpaceShipHandler.h"
+#include "Handler.h"
 #include "catch2/catch_test_macros.hpp"
 #include "catch2/matchers/catch_matchers_floating_point.hpp"
 
@@ -19,7 +19,7 @@ void doubleTest(const long double a, const long double b, char* name) {
 
 TEST_CASE("Accuracy") {
     { // TEST SPACESHIP 1 - Setting values:
-        SpaceShipHandler handler(1024);
+        Handler handler(1024);
         auto ship = handler.addShip("Ship 1");
         handler.createEngine("1.1", 100000.456153, 456123.15687498453);
         ship->addStage(1561.1654893512, 4561312.8564854312, handler.getEngine("1.1"));
@@ -39,7 +39,7 @@ TEST_CASE("Accuracy") {
     }
 
     { // TEST SPACESHIP 2 - Random:
-        SpaceShipHandler handler(1024);
+        Handler handler(1024);
         auto ship = handler.addShip("Ship 2");
         handler.createEngine("2.1", 52851.89721221082680102654194342903793, 44949670902.83464924991130828857421875000000);
         ship->addStage(52967195.75027480287462822161614894866943, 976209.93331809725617631556815467774868, handler.getEngine("2.1"));
@@ -53,7 +53,7 @@ TEST_CASE("Accuracy") {
 }
 
 TEST_CASE("Runtime Errors") {
-    SpaceShipHandler handler(1024);
+    Handler handler(1024);
     std::vector<int> stages;
 
     for (uint i = 0; i < 100; i++) {
@@ -180,7 +180,7 @@ TEST_CASE("Crazy") {
 
         std::vector<stage*> stageList;
 
-        SpaceShipHandler handler(1024);
+        Handler handler(1024);
         auto* ship = handler.addShip("Ship " + std::to_string(j));
         const uint stageCount = stageRange(gen);
         for (uint i = 0; i < stageCount; i++) {

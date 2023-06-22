@@ -5,12 +5,12 @@
 #include <cmath>
 #include <cstdio>
 #include <mpfr.h>
-#include "SpaceShip.h"
+#include "Ship.h"
 
 #ifndef IRA_SPACESHIPWRAPPER_H
 #define IRA_SPACESHIPWRAPPER_H
 
-class SpaceShipWrapper : SpaceShip {
+class ShipWrapper : Ship {
 public:
 
     // ========== CREATORS ==========
@@ -21,7 +21,7 @@ public:
         mpfr_set_ld(dryMass_mpfr, dryMass, MPFR_RNDN);
         mpfr_set_ld(fuelMass_mpfr, fuelMass, MPFR_RNDN);
 
-        this->SpaceShip::addStage(dryMass_mpfr, fuelMass_mpfr, engine, stageIdx);
+        this->Ship::addStage(dryMass_mpfr, fuelMass_mpfr, engine, stageIdx);
 
         mpfr_clear(dryMass_mpfr);
         mpfr_clear(fuelMass_mpfr);
@@ -34,7 +34,7 @@ public:
         mpfr_set_ld(dryMass_mpfr, dryMass, MPFR_RNDN);
         mpfr_set_ld(fuelMass_mpfr, fuelMass, MPFR_RNDN);
 
-        this->SpaceShip::setStage(dryMass_mpfr, fuelMass_mpfr, engine, stageIdx);
+        this->Ship::setStage(dryMass_mpfr, fuelMass_mpfr, engine, stageIdx);
 
         mpfr_clear(dryMass_mpfr);
         mpfr_clear(fuelMass_mpfr);
@@ -61,7 +61,7 @@ public:
         return result;
     }
 
-    SpaceShip* getRawShip() {
+    Ship* getRawShip() {
         return this;
     }
 
@@ -151,7 +151,7 @@ public:
 
 
     // ========== SETTERS ==========
-    //   This is unoptimized from version before SpaceShipHandler merge, but abstraction
+    //   This is unoptimized from version before Handler merge, but abstraction
     //   and modularity is more important when working in this environment.
 
     /**
@@ -163,7 +163,7 @@ public:
         mpfr_t newMass_mpfr;
         mpfr_init(newMass_mpfr);
         mpfr_set_ld(newMass_mpfr, newMass, MPFR_RNDN);
-        SpaceShip::setStageDryMass(stages[stageIdx], newMass_mpfr);
+        Ship::setStageDryMass(stages[stageIdx], newMass_mpfr);
         mpfr_clear(newMass_mpfr);
     }
 
@@ -176,12 +176,12 @@ public:
         mpfr_t newMassMPFR;
         mpfr_init(newMassMPFR);
         mpfr_set_d(newMassMPFR, newMass, MPFR_RNDN);
-        SpaceShip::setStageFuelMass(stages[stageIdx], newMassMPFR);
+        Ship::setStageFuelMass(stages[stageIdx], newMassMPFR);
         mpfr_clear(newMassMPFR);
     }
 
     void setStageEngine(uint stageIdx, const Engine* newEngine) {
-        SpaceShip::setStageEngine(stages[stageIdx], newEngine);
+        Ship::setStageEngine(stages[stageIdx], newEngine);
     }
 
     // ===== MPFR GETTERS =====

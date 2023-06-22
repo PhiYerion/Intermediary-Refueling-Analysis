@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QHBoxLayout>
-#include "SpaceShipHandler.h"
+#include "Handler.h"
 
 class HeaderWidget : public QWidget {
 public:

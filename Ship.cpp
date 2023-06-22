@@ -1,4 +1,4 @@
-#include "SpaceShip.h"
+#include "Ship.h"
 #include "Stage.h"
 #include "cstdio"
 #include <mpfr.h>
@@ -12,14 +12,14 @@
  * Otherwise, it calculates the delta-V for all stages.
  */
 
-SpaceShip::SpaceShip() {
+Ship::Ship() {
     mpfr_init(mass);
     mpfr_init(deltaV);
     mpfr_set_zero(mass, 0);
     mpfr_set_zero(deltaV, 0);
 }
 
-SpaceShip::~SpaceShip() {
+Ship::~Ship() {
     mpfr_clear(mass);
     mpfr_clear(deltaV);
     for (auto & stage : stages) {
@@ -27,7 +27,7 @@ SpaceShip::~SpaceShip() {
     }
 }
 
-void SpaceShip::genDeltaV () {       // for addStage, this should implement only calcs on stages before new
+void Ship::genDeltaV () {       // for addStage, this should implement only calcs on stages before new
 
     mpfr_t denominator, remainingMass;
     mpfr_init(denominator);
@@ -52,11 +52,11 @@ void SpaceShip::genDeltaV () {       // for addStage, this should implement only
   * @brief Returns the vector of stages.
   * @return Vector of stages.
   */
-std::vector<Stage*>* SpaceShip::getStages () {
+std::vector<Stage*>* Ship::getStages () {
     return &stages;
 }
 
-void SpaceShip::getRemainingMass (mpfr_t result, const Stage* inputStage) {
+void Ship::getRemainingMass (mpfr_t result, const Stage* inputStage) {
     mpfr_set(result, mass, MPFR_RNDN);
     for (auto & stage : stages) {
         if (stage == inputStage) {
@@ -85,7 +85,7 @@ void SpaceShip::getRemainingMass (mpfr_t result, const Stage* inputStage) {
  */
 // New system defines that engine is a pointer to an engine object, not an engine object itself.
 // This would break that.
-/*void SpaceShip::setStageEngine(Stage* stage, Engine newEngine) {
+/*void Ship::setStageEngine(Stage* stage, Engine newEngine) {
     mpfr_sub(mass, mass, stage->engine->mass, MPFR_RNDN);
     mpfr_sub(stage->totalMass, stage->totalMass, stage->engine->mass, MPFR_RNDN);
 
@@ -96,7 +96,7 @@ void SpaceShip::getRemainingMass (mpfr_t result, const Stage* inputStage) {
     genDeltaV();
 }*/
 
-void SpaceShip::setStageEngine(Stage* stage, const Engine* newEngine) {
+void Ship::setStageEngine(Stage* stage, const Engine* newEngine) {
     // mass += newEngine->mass - stage->engine->mass
     mpfr_sub(mass, mass, stage->engine->mass, MPFR_RNDN);
     mpfr_add(mass, mass, newEngine->mass,     MPFR_RNDN);
@@ -119,7 +119,7 @@ void SpaceShip::setStageEngine(Stage* stage, const Engine* newEngine) {
  */
 // New system defines that engine is a pointer to an engine object, not an engine object itself.
 // This would break that.
-/*void SpaceShip::addStage(mpfr_t dryMass, mpfr_t fuelMass, Engine engine, const int index) {
+/*void Ship::addStage(mpfr_t dryMass, mpfr_t fuelMass, Engine engine, const int index) {
 
     Stage* stage;
     if (index != -1) {
@@ -143,7 +143,7 @@ void SpaceShip::setStageEngine(Stage* stage, const Engine* newEngine) {
 }*/
 
 
-void SpaceShip::addStage(mpfr_t dryMass, mpfr_t fuelMass, const Engine* engine, const int index) {
+void Ship::addStage(mpfr_t dryMass, mpfr_t fuelMass, const Engine* engine, const int index) {
 
     Stage* stage;
     if (index != -1) {
@@ -166,7 +166,7 @@ void SpaceShip::addStage(mpfr_t dryMass, mpfr_t fuelMass, const Engine* engine, 
     genDeltaV();
 }
 
-void SpaceShip::setStage(mpfr_t dryMass, mpfr_t fuelMass, const Engine* engine, const int index) {
+void Ship::setStage(mpfr_t dryMass, mpfr_t fuelMass, const Engine* engine, const int index) {
     mpfr_sub(mass, mass, stages[index]->totalMass, MPFR_RNDN);
 
     Stage* stage = stages[index];
@@ -187,7 +187,7 @@ void SpaceShip::setStage(mpfr_t dryMass, mpfr_t fuelMass, const Engine* engine, 
 * @param stage Pointer to the stage.
 * @param newMass The new dry mass.
 */
-void SpaceShip::setStageDryMass(Stage* stage, const mpfr_t newMass) {
+void Ship::setStageDryMass(Stage* stage, const mpfr_t newMass) {
     // mass += newMass - stage->dryMass;
     mpfr_sub(mass, mass, stage->dryMass, MPFR_RNDN);
     mpfr_add(mass, mass, newMass,        MPFR_RNDN);
@@ -206,7 +206,7 @@ void SpaceShip::setStageDryMass(Stage* stage, const mpfr_t newMass) {
  * @param stage Pointer to the stage.
  * @param newMass The new fuel mass.
  */
-void SpaceShip::setStageFuelMass(Stage* stage, const mpfr_t newMass) {
+void Ship::setStageFuelMass(Stage* stage, const mpfr_t newMass) {
     mpfr_sub(mass, mass, stage->fuelMass, MPFR_RNDN);
     mpfr_sub(stage->totalMass, stage->totalMass, stage->fuelMass, MPFR_RNDN);
 
